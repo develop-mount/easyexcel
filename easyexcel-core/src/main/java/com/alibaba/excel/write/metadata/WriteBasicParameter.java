@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import com.alibaba.excel.metadata.BasicParameter;
 import com.alibaba.excel.write.handler.WriteHandler;
 
-import com.alibaba.excel.write.handler.PipeFilter;
+import com.alibaba.excel.write.handler.BasePipeFilter;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -67,5 +67,5 @@ public class WriteBasicParameter extends BasicParameter {
     /**
      * pipe filter map
      */
-    private Map<String, Supplier<PipeFilter<Object, Object>>> customPipeFilterMap = new HashMap<>();
+    private Map<String, Supplier<BasePipeFilter<Object, Object>>> customPipeFilterMap = new HashMap<>();
 }

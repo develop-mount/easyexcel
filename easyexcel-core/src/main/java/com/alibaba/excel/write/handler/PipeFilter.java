@@ -1,38 +1,32 @@
 package com.alibaba.excel.write.handler;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
 /**
  * Description:
- * pipeline filter
  *
  * @author linfeng
  * @version 1.0.0
- * @since 2023/5/27 21:58
+ * @since 2023/5/29 10:13
  */
-public abstract class PipeFilter<T, R> implements Function<T, R> {
-
-    private final List<String> filterParams = new ArrayList<>();
+public interface PipeFilter<T, R> extends Function<T, R> {
 
     /**
-     * filter 参数
+     * filter 参数集合
      *
      * @return 参数集合
      */
-    protected List<String> params() {
-        return filterParams;
-    }
+    List<String> params();
 
     /**
-     * 添加参数
+     * 添加参数到pipe filter
      *
      * @param params 参数
-     * @return 过滤器
+     * @return pipe filter
      */
-    public PipeFilter<T, R> addParams(String... params) {
+    default PipeFilter<T, R> addParams(String... params) {
         params().addAll(Arrays.asList(params));
         return this;
     }

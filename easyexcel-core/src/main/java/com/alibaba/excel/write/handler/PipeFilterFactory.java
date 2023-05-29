@@ -18,9 +18,9 @@ import java.util.function.Supplier;
  * @version 1.0.0
  * @since 2023/5/27 22:19
  */
-public class PipeFilterFactory extends PipeFilter<Object, Object> {
+public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
 
-    private static final Map<String, Supplier<PipeFilter<Object, Object>>> PIPE_FILTER_MAP = new HashMap<>();
+    private static final Map<String, Supplier<BasePipeFilter<Object, Object>>> PIPE_FILTER_MAP = new HashMap<>();
 
     static {
         // 初始化内置管道过滤器
@@ -65,7 +65,7 @@ public class PipeFilterFactory extends PipeFilter<Object, Object> {
             throw new ExcelRuntimeException("管道字符串格式不正确");
         }
 
-        List<PipeFilter<Object, Object>> pipeFilterList = new ArrayList<>();
+        List<BasePipeFilter<Object, Object>> pipeFilterList = new ArrayList<>();
         for (int i = 1; i < pipeArray.length; i++) {
             if (StringUtils.isBlank(pipeArray[i])) {
                 continue;
@@ -81,11 +81,11 @@ public class PipeFilterFactory extends PipeFilter<Object, Object> {
                 continue;
             }
 
-            Supplier<PipeFilter<Object, Object>> supplier = PIPE_FILTER_MAP.get(filterName);
+            Supplier<BasePipeFilter<Object, Object>> supplier = PIPE_FILTER_MAP.get(filterName);
             if (Objects.isNull(supplier)) {
                 throw new ExcelRuntimeException(String.format("没有[%s]的管道过滤器", filterName));
             }
-            PipeFilter<Object, Object> pipeFilter = supplier.get();
+            BasePipeFilter<Object, Object> pipeFilter = supplier.get();
             if (Objects.nonNull(pipeFilter)) {
                 pipeFilterList.add(pipeFilter);
             }

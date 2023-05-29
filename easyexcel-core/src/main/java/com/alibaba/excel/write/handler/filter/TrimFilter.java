@@ -1,7 +1,7 @@
 package com.alibaba.excel.write.handler.filter;
 
 import com.alibaba.excel.exception.ExcelRuntimeException;
-import com.alibaba.excel.write.handler.PipeFilter;
+import com.alibaba.excel.write.handler.BasePipeFilter;
 
 import java.util.Objects;
 
@@ -13,7 +13,7 @@ import java.util.Objects;
  * @version 1.0.0
  * @since 2023/5/26 8:34
  */
-public class TrimFilter extends PipeFilter<Object, Object> {
+public class TrimFilter extends BasePipeFilter<Object, Object> {
 
     @Override
     public Object apply(Object value) {

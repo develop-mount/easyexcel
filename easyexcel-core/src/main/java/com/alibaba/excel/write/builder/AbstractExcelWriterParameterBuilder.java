@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 import com.alibaba.excel.metadata.AbstractParameterBuilder;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteBasicParameter;
-import com.alibaba.excel.write.handler.PipeFilter;
+import com.alibaba.excel.write.handler.BasePipeFilter;
 
 /**
  * Build ExcelBuilder
@@ -144,7 +144,7 @@ public abstract class AbstractExcelWriterParameterBuilder<T extends AbstractExce
      * @param name       pipe filter name
      * @param pipeFilter pipe filter
      */
-    public T registerPipeFilterHandler(String name, Supplier<PipeFilter<Object, Object>> pipeFilter) {
+    public T registerPipeFilterHandler(String name, Supplier<BasePipeFilter<Object, Object>> pipeFilter) {
         if (parameter().getCustomPipeFilterMap() == null) {
             parameter().setCustomPipeFilterMap(new HashMap<>(16));
         }
