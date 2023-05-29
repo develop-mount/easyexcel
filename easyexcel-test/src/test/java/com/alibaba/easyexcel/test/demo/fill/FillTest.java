@@ -1,10 +1,7 @@
 package com.alibaba.easyexcel.test.demo.fill;
 
 import java.io.File;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
@@ -219,14 +216,58 @@ public class FillTest {
         }
     }
 
+    /**
+     * 填充列表
+     *
+     * @since 2.1.1
+     */
+    @Test
+    public void pipeFill() {
+        // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
+        // 填充list 的时候还要注意 模板中{.} 多了个点 表示list
+        // 如果填充list的对象是map,必须包涵所有list的key,哪怕数据为null，必须使用map.put(key,null)
+        String templateFileName =
+            TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "pipe.xlsx";
+
+        // 方案1 一下子全部放到内存里面 并填充
+        String fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
+        // 这里 会填充到第一个sheet， 然后文件流会自动关闭
+        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(dataPipe());
+
+//        // 方案2 分多次 填充 会使用文件缓存（省内存）
+//        fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
+//        try (ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build()) {
+//            WriteSheet writeSheet = EasyExcel.writerSheet().build();
+//            excelWriter.fill(data(), writeSheet);
+//            excelWriter.fill(data(), writeSheet);
+//        }
+    }
+
     private List<FillData> data() {
         List<FillData> list = ListUtils.newArrayList();
         for (int i = 0; i < 10; i++) {
             FillData fillData = new FillData();
             list.add(fillData);
-            fillData.setName("张三");
+            fillData.setName(" 张三 ");
             fillData.setNumber(5.2);
             fillData.setDate(new Date());
+        }
+        return list;
+    }
+
+    private List<FillData> dataPipe() {
+        List<FillData> list = ListUtils.newArrayList();
+        for (int i = 0; i < 10; i++) {
+            FillData fillData = new FillData();
+            list.add(fillData);
+            fillData.setName(" 张三 ");
+            fillData.setNumber(5.2);
+            fillData.setDate(new Date());
+            fillData.setImages(Arrays.asList("http://www.baidu.com/images/m100-2.3.jpg"
+                , "http://www.baidu.com/images/m100-1.3.jpg"
+                , "http://www.baidu.com/images/m100-1.4.jpg"
+                , "http://www.baidu.com/images/m100-1.1.jpg"
+                , "http://www.baidu.com/images/m100-1.2.jpg"));
         }
         return list;
     }
