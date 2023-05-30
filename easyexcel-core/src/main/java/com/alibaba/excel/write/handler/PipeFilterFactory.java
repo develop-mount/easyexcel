@@ -29,6 +29,8 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
         PIPE_FILTER_MAP.put("pattern", PatternFilter::new);
         PIPE_FILTER_MAP.put("date-format", DateFormatFilter::new);
         PIPE_FILTER_MAP.put("contains", ContainsFilter::new);
+        PIPE_FILTER_MAP.put("list-index", ListIndexFilter::new);
+        PIPE_FILTER_MAP.put("list-out", ListOutFilter::new);
     }
 
     private PipeFilterFactory(WriteContext writeContext) {
