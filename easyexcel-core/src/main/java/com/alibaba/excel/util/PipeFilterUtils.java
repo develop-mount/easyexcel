@@ -40,8 +40,8 @@ public class PipeFilterUtils {
         return (map == null || map.isEmpty());
     }
 
-    public static String trimAndLowerCase(String source) {
-        return StringUtils.isBlank(source) ? "" : source.trim().toLowerCase();
+    public static String trim(String source) {
+        return StringUtils.isBlank(source) ? "" : source.trim();
     }
 
     public static String[] getPipelines(String pipelines) {

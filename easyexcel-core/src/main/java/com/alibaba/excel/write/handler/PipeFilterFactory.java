@@ -78,7 +78,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
                 continue;
             }
 
-            String filterName = PipeFilterUtils.trimAndLowerCase(expressArray[0]);
+            String filterName = PipeFilterUtils.trim(expressArray[0]).toLowerCase();
             if (StringUtils.isBlank(filterName)) {
                 continue;
             }
@@ -92,7 +92,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
                 pipeFilterList.add(pipeFilter);
             }
             if (expressArray.length > 1 && StringUtils.isNotBlank(expressArray[1])) {
-                String[] paramArray = PipeFilterUtils.getPipeFilterParams(PipeFilterUtils.trimAndLowerCase(expressArray[1]));
+                String[] paramArray = PipeFilterUtils.getPipeFilterParams(PipeFilterUtils.trim(expressArray[1]));
                 pipeFilter.addParams(paramArray);
             }
         }
