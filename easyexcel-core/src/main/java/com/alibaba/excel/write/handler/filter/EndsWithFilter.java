@@ -1,6 +1,8 @@
 package com.alibaba.excel.write.handler.filter;
 
 import com.alibaba.excel.exception.ExcelRuntimeException;
+import com.alibaba.excel.util.PipeFilterUtils;
+import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
 
 import java.util.Collection;
@@ -21,6 +23,10 @@ public class EndsWithFilter extends BasePipeFilter<Object, Object> {
 
         if (Objects.isNull(value)) {
             return "";
+        }
+
+        if (PipeFilterUtils.isEmpty(params())) {
+            return value;
         }
 
         if (value instanceof Collection) {
@@ -45,6 +51,9 @@ public class EndsWithFilter extends BasePipeFilter<Object, Object> {
 
             String col = (String) value;
             for (String start : params()) {
+                if (StringUtils.isBlank(start)) {
+                    continue;
+                }
                 if (col.endsWith(start)) {
                     return col;
                 }

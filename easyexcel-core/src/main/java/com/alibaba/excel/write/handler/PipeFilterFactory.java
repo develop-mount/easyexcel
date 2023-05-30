@@ -4,10 +4,7 @@ import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.exception.ExcelRuntimeException;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.PipeFilterUtils;
-import com.alibaba.excel.write.handler.filter.EndsWithFilter;
-import com.alibaba.excel.write.handler.filter.PatternFilter;
-import com.alibaba.excel.write.handler.filter.StartsWithFilter;
-import com.alibaba.excel.write.handler.filter.TrimFilter;
+import com.alibaba.excel.write.handler.filter.*;
 
 import java.util.*;
 import java.util.function.Function;
@@ -30,6 +27,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
         PIPE_FILTER_MAP.put("ends-with", EndsWithFilter::new);
         PIPE_FILTER_MAP.put("starts-with", StartsWithFilter::new);
         PIPE_FILTER_MAP.put("pattern", PatternFilter::new);
+        PIPE_FILTER_MAP.put("date-format", DateFormatFilter::new);
     }
 
     private PipeFilterFactory(WriteContext writeContext) {

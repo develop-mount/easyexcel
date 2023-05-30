@@ -1,5 +1,6 @@
 package com.alibaba.excel.write.handler.filter;
 
+import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
 
@@ -23,6 +24,10 @@ public class PatternFilter extends BasePipeFilter<Object, Object> {
 
         if (Objects.isNull(value)) {
             return "";
+        }
+
+        if (PipeFilterUtils.isEmpty(params())) {
+            return value;
         }
 
         if (value instanceof Collection) {
