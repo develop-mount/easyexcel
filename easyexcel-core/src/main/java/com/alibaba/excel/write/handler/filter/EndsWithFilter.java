@@ -32,17 +32,19 @@ public class EndsWithFilter extends BasePipeFilter<Object, Object> {
         if (value instanceof Collection) {
             @SuppressWarnings("unchecked")
             Collection<Object> collection = (Collection<Object>) value;
-            for (String end : params()) {
-                if (Objects.isNull(end)) {
+            for (Object col : collection) {
+                if (Objects.isNull(col)) {
                     continue;
                 }
-                for (Object col : collection) {
-                    if (Objects.isNull(col)) {
-                        continue;
-                    }
+                if (col instanceof String) {
                     String cel = (String) col;
-                    if (cel.endsWith(end)) {
-                        return col;
+                    for (String end : params()) {
+                        if (Objects.isNull(end)) {
+                            continue;
+                        }
+                        if (cel.endsWith(end)) {
+                            return col;
+                        }
                     }
                 }
             }

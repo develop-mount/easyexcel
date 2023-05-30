@@ -32,7 +32,6 @@ public class PatternFilter extends BasePipeFilter<Object, Object> {
 
         if (value instanceof Collection) {
 
-            List<Object> result = new ArrayList<>();
             //noinspection unchecked
             Collection<Object> collection = (Collection<Object>) value;
             for (Object col : collection) {
@@ -45,28 +44,24 @@ public class PatternFilter extends BasePipeFilter<Object, Object> {
                         if (StringUtils.isBlank(regex)) {
                             continue;
                         }
-                        Pattern pattern = Pattern.compile(regex);
-                        if (pattern.matcher(cel).matches()) {
-                            result.add(cel);
-                            break;
+                        if (Pattern.matches(regex, cel)) {
+                            return cel;
                         }
                     }
                 }
             }
-            return result;
-
+            return "没有匹配到结果";
         } else if (value instanceof String) {
             String col = (String) value;
             for (String regex : params()) {
                 if (StringUtils.isBlank(regex)) {
                     continue;
                 }
-                Pattern pattern = Pattern.compile(regex);
-                if (pattern.matcher(col).matches()) {
+                if (Pattern.matches(regex, col)) {
                     return col;
                 }
             }
-            return "";
+            return "没有匹配到结果";
         }
         return "pattern filter input object is not collection or string";
     }

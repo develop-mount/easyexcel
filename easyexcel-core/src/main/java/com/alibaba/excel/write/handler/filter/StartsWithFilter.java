@@ -32,17 +32,19 @@ public class StartsWithFilter extends BasePipeFilter<Object, Object> {
         if (value instanceof Collection) {
             @SuppressWarnings("unchecked")
             Collection<Object> collection = (Collection<Object>) value;
-            for (String start : params()) {
-                if (Objects.isNull(start)) {
+            for (Object col : collection) {
+                if (Objects.isNull(col)) {
                     continue;
                 }
-                for (Object coll : collection) {
-                    if (Objects.isNull(coll)) {
-                        continue;
-                    }
-                    String cel = (String) coll;
-                    if (cel.startsWith(start)) {
-                        return cel;
+                if (col instanceof String) {
+                    String cel = (String) col;
+                    for (String start : params()) {
+                        if (Objects.isNull(start)) {
+                            continue;
+                        }
+                        if (cel.startsWith(start)) {
+                            return cel;
+                        }
                     }
                 }
             }
