@@ -233,6 +233,7 @@ public class FillTest {
         String fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
         // 这里 会填充到第一个sheet， 然后文件流会自动关闭
         EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(dataPipe());
+//        EasyExcel.write(fileName).registerPipeFilterHandler("nama", null).withTemplate(templateFileName).sheet().doFill(dataPipe());
 
 //        // 方案2 分多次 填充 会使用文件缓存（省内存）
 //        fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
@@ -241,6 +242,36 @@ public class FillTest {
 //            excelWriter.fill(data(), writeSheet);
 //            excelWriter.fill(data(), writeSheet);
 //        }
+    }
+
+    @Test
+    public void pipePrefixFill() {
+        // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
+        // 填充list 的时候还要注意 模板中{.} 多了个点 表示list
+        // 如果填充list的对象是map,必须包涵所有list的key,哪怕数据为null，必须使用map.put(key,null)
+        String templateFileName =
+            TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "pipe2.xlsx";
+
+        // 方案1 一下子全部放到内存里面 并填充
+        String fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
+        // 这里 会填充到第一个sheet， 然后文件流会自动关闭
+        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(dataPipe2());
+
+    }
+
+    @Test
+    public void pipePrefix3Fill() {
+        // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
+        // 填充list 的时候还要注意 模板中{.} 多了个点 表示list
+        // 如果填充list的对象是map,必须包涵所有list的key,哪怕数据为null，必须使用map.put(key,null)
+        String templateFileName =
+            TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "pipe3.xlsx";
+
+        // 方案1 一下子全部放到内存里面 并填充
+        String fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
+        // 这里 会填充到第一个sheet， 然后文件流会自动关闭
+        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(dataPipe3());
+
     }
 
     private List<FillData> data() {
@@ -260,6 +291,46 @@ public class FillTest {
         for (int i = 0; i < 10; i++) {
             FillData fillData = new FillData();
             list.add(fillData);
+            fillData.setName(" 张三 ");
+            fillData.setNumber(5.2);
+            fillData.setDate(new Date());
+            fillData.setImages(Arrays.asList("http://www.baidu.com/images/m100-1.1.jpg"
+                , "http://www.baidu.com/images/m100-1.2.jpg"
+                , "http://www.baidu.com/images/m100-1.3.jpg"
+                , "http://www.baidu.com/images/m100-1.4.jpg"
+                , "http://www.baidu.com/images/m100-1.5.jpg"));
+        }
+        return list;
+    }
+
+    private List<PrefixData> dataPipe2() {
+        List<PrefixData> list = ListUtils.newArrayList();
+        for (int i = 0; i < 10; i++) {
+            PrefixData prefixData = new PrefixData();
+            FillData fillData = new FillData();
+            prefixData.setFillData(fillData);
+            list.add(prefixData);
+            fillData.setName(" 张三 ");
+            fillData.setNumber(5.2);
+            fillData.setDate(new Date());
+            fillData.setImages(Arrays.asList("http://www.baidu.com/images/m100-1.1.jpg"
+                , "http://www.baidu.com/images/m100-1.2.jpg"
+                , "http://www.baidu.com/images/m100-1.3.jpg"
+                , "http://www.baidu.com/images/m100-1.4.jpg"
+                , "http://www.baidu.com/images/m100-1.5.jpg"));
+        }
+        return list;
+    }
+
+    private List<DemoData> dataPipe3() {
+        List<DemoData> list = ListUtils.newArrayList();
+        for (int i = 0; i < 10; i++) {
+            DemoData data = new DemoData();
+            PrefixData prefixData = new PrefixData();
+            FillData fillData = new FillData();
+            prefixData.setFillData(fillData);
+            data.setDemo(prefixData);
+            list.add(data);
             fillData.setName(" 张三 ");
             fillData.setNumber(5.2);
             fillData.setDate(new Date());

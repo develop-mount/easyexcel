@@ -1,8 +1,10 @@
 package com.alibaba.excel.util;
 
+import org.springframework.cglib.beans.BeanMap;
 import org.springframework.lang.Nullable;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -19,6 +21,8 @@ public class PipeFilterUtils {
     private static final String MULTI_PIPE_FLAG = "\\|";
     private static final String FILTER_PARAM_FLAG = ":";
     private static final String PARAM_FLAG = ",";
+
+    private static final String VAR_FLAG = "\\.";
 
     /**
      * Return {@code true} if the supplied Collection is {@code null} or empty.
@@ -76,6 +80,42 @@ public class PipeFilterUtils {
         String[] varArray = PipeFilterUtils.getPipelines(variable);
         if (Objects.nonNull(varArray[0])) {
             return varArray[0].trim();
+        }
+        return null;
+    }
+
+    /**
+     * 从map中获取值
+     * @param dataMap map
+     * @param key 例如: demo.test.name
+     * @return 返回值
+     */
+    public static Object getValueOfMap(Map dataMap, String key) {
+
+        if (StringUtils.isBlank(key)) {
+            return null;
+        }
+        Map tempDataMap = dataMap;
+        String[] keyArray = key.split(VAR_FLAG);
+        for (int i = 0; i < keyArray.length; i++) {
+            if (StringUtils.isBlank(keyArray[i])) {
+                continue;
+            }
+            Object obj = tempDataMap.get(keyArray[i]);
+            if (Objects.isNull(obj)) {
+                continue;
+            }
+            if (i == keyArray.length - 1) {
+                return obj;
+            } else {
+                if (obj instanceof BeanMap) {
+                    tempDataMap = (BeanMap) obj;
+                } else if (obj instanceof Map) {
+                    tempDataMap = (Map)obj;
+                } else {
+                    tempDataMap = BeanMapUtils.create(obj);
+                }
+            }
         }
         return null;
     }

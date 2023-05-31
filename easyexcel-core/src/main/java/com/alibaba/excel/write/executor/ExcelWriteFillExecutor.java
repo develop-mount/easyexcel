@@ -202,7 +202,6 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         } else {
             dataMap = BeanMapUtils.create(oneRowData);
         }
-        Set<String> dataKeySet = new HashSet<>(dataMap.keySet());
 
         RowWriteHandlerContext rowWriteHandlerContext = WriteHandlerUtils.createRowWriteHandlerContext(writeContext,
             null, relativeRowIndex, Boolean.FALSE);
@@ -218,13 +217,11 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 Object value;
                 // 判断是否包含管道
                 if (PipeFilterUtils.isPipeline(variable)) {
-                    value = dataMap.get(PipeFilterUtils.getVariableName(variable));
+                    value = PipeFilterUtils.getValueOfMap(dataMap, PipeFilterUtils.getVariableName(variable));
                     value = PipeFilterFactory.createPipeFilter(writeContext).addParams(variable).apply(value);
                 } else {
-                    if (!dataKeySet.contains(variable)) {
-                        continue;
-                    }
-                    value = dataMap.get(variable);
+
+                    value = PipeFilterUtils.getValueOfMap(dataMap, variable);
                 }
 
                 ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(dataMap,
@@ -262,13 +259,11 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     Object value;
                     // 判断是否包含管道
                     if (PipeFilterUtils.isPipeline(variable)) {
-                        value = dataMap.get(PipeFilterUtils.getVariableName(variable));
+                        value = PipeFilterUtils.getValueOfMap(dataMap, PipeFilterUtils.getVariableName(variable));
                         value = PipeFilterFactory.createPipeFilter(writeContext).addParams(variable).apply(value);
                     } else {
-                        if (!dataKeySet.contains(variable)) {
-                            continue;
-                        }
-                        value = dataMap.get(variable);
+
+                        value = PipeFilterUtils.getValueOfMap(dataMap, variable);
                     }
 
                     ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(dataMap,
