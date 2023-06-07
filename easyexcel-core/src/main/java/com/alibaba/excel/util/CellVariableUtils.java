@@ -20,7 +20,7 @@ public class CellVariableUtils {
 
     /**
      * 根据cell值获取单元格变量
-     *
+     * @author linfeng
      * @param cellValue 单元格值
      * @return 变量集合
      */
