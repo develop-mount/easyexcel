@@ -6,6 +6,8 @@ import com.alibaba.excel.write.handler.BasePipeFilter;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -48,7 +50,7 @@ public class ContainsFilter extends BasePipeFilter<Object, Object> {
                     }
                 }
             }
-            return "没有匹配到结果";
+            return String.format("错误:没有匹配到[%s]结果", String.join(",", params()));
         } else if (value instanceof String) {
 
             String col = (String) value;
@@ -60,10 +62,10 @@ public class ContainsFilter extends BasePipeFilter<Object, Object> {
                     return col;
                 }
             }
-            return "没有匹配到结果";
+            return String.format("错误:没有匹配到[%s]结果", String.join(",", params()));
         } else {
 
-            return "contains filter input object is not collection or string";
+            return "错误:传入数据不是集合或字符串";
         }
     }
 }
