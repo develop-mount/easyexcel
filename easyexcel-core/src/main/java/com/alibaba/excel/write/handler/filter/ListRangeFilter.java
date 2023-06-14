@@ -20,6 +20,8 @@ import java.util.Objects;
 @Slf4j
 public class ListRangeFilter extends BasePipeFilter<Object, Object> {
 
+    private static int PARAMS_NUM = 2;
+
     /**
      * list-range:index,count 从index开始，获取count个数量
      *
@@ -46,7 +48,7 @@ public class ListRangeFilter extends BasePipeFilter<Object, Object> {
         @SuppressWarnings("unchecked")
         List<Object> collection = (List<Object>) value;
 
-        if (PipeFilterUtils.isEmpty(params()) || params().size() > 2) {
+        if (PipeFilterUtils.isEmpty(params()) || params().size() > PARAMS_NUM) {
             return PipeDataWrapper.error("list-range错误:[list-range:index,count]传入参数下标为空或是超过两个");
         }
 
