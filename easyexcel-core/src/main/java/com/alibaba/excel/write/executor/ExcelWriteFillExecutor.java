@@ -93,6 +93,27 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         super(writeContext);
     }
 
+    /**
+     * 获取excel中cell fill 错误消息
+     *
+     * @return 错误map
+     */
+    public Map<UniqueDataFlagKey, List<AnalysisCell>> getTemplateAllAnalysisCell() {
+        Map<UniqueDataFlagKey, List<AnalysisCell>> allAnalysisCellMap = MapUtils.newHashMap();
+        if (!org.springframework.util.CollectionUtils.isEmpty(templateAnalysisCache)) {
+            allAnalysisCellMap.putAll(templateAnalysisCache);
+        }
+        for (Map.Entry<UniqueDataFlagKey, List<AnalysisCell>> entry : templateCollectionAnalysisCache.entrySet()) {
+            List<AnalysisCell> analysisCells = allAnalysisCellMap.get(entry.getKey());
+            if (Objects.isNull(analysisCells)) {
+                analysisCells = new ArrayList<>();
+            }
+            analysisCells.addAll(entry.getValue());
+            allAnalysisCellMap.put(entry.getKey(), analysisCells);
+        }
+        return allAnalysisCellMap;
+    }
+
     public void fill(Object data, FillConfig fillConfig) {
         if (data == null) {
             data = new HashMap<String, Object>(16);
@@ -107,7 +128,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         String currentDataPrefix;
 
         if (data instanceof FillWrapper) {
-            FillWrapper fillWrapper = (FillWrapper)data;
+            FillWrapper fillWrapper = (FillWrapper) data;
             currentDataPrefix = fillWrapper.getName();
             realData = fillWrapper.getCollectionData();
         } else {
@@ -119,7 +140,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         // processing data
         if (realData instanceof Collection) {
             List<AnalysisCell> analysisCellList = readTemplateData(templateCollectionAnalysisCache);
-            Collection<?> collectionData = (Collection<?>)realData;
+            Collection<?> collectionData = (Collection<?>) realData;
             if (CollectionUtils.isEmpty(collectionData)) {
                 return;
             }
@@ -198,7 +219,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         }
         Map dataMap;
         if (oneRowData instanceof Map) {
-            dataMap = (Map)oneRowData;
+            dataMap = (Map) oneRowData;
         } else {
             dataMap = BeanMapUtils.create(oneRowData);
         }
@@ -218,7 +239,12 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 // 判断是否包含管道
                 if (PipeFilterUtils.isPipeline(variable)) {
                     value = PipeFilterUtils.getValueOfMap(dataMap, PipeFilterUtils.getVariableName(variable));
-                    value = PipeFilterFactory.createPipeFilter(writeContext).addParams(variable).apply(value);
+                    try {
+                        value = PipeFilterFactory.createPipeFilter(writeContext).addParams(variable).apply(value);
+                    } catch (Exception e) {
+                        value = "";
+                        analysisCell.setMessage(e.getMessage());
+                    }
                 } else {
 
                     value = PipeFilterUtils.getValueOfMap(dataMap, variable);
@@ -260,7 +286,12 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     // 判断是否包含管道
                     if (PipeFilterUtils.isPipeline(variable)) {
                         value = PipeFilterUtils.getValueOfMap(dataMap, PipeFilterUtils.getVariableName(variable));
-                        value = PipeFilterFactory.createPipeFilter(writeContext).addParams(variable).apply(value);
+                        try {
+                            value = PipeFilterFactory.createPipeFilter(writeContext).addParams(variable).apply(value);
+                        } catch (Exception e) {
+                            value = "";
+                            analysisCell.setMessage(e.getMessage());
+                        }
                     } else {
 
                         value = PipeFilterUtils.getValueOfMap(dataMap, variable);

@@ -1,7 +1,6 @@
 package com.alibaba.excel.write.handler.filter;
 
 import com.alibaba.excel.util.PipeFilterUtils;
-import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
 
 import java.util.Collection;
@@ -18,10 +17,38 @@ import java.util.stream.Collectors;
  */
 public class ListOutFilter extends BasePipeFilter<Object, Object> {
 
-    private static final String WRAP = "wrap";
-    private static final String COMMA = "comma";
-    private static final String DELIMITER_WRAP = "\n";
-    private static final String DELIMITER_COMMA = ",";
+    private enum Delimiter {
+        /**
+         * 空格
+         */
+        BLANK("blank", " "),
+        /**
+         * 回车
+         */
+        WRAP("wrap", "\n"),
+        /**
+         * 逗号
+         */
+        COMMA("comma", ",");
+
+        private final String value;
+        private final String delimiter;
+
+        Delimiter(String value, String delimiter) {
+            this.value = value;
+            this.delimiter = delimiter;
+        }
+
+        public static Delimiter ofValue(String value) {
+            for (Delimiter delim : Delimiter.values()) {
+                if (delim.value.equalsIgnoreCase(value)) {
+                    return delim;
+                }
+            }
+            return null;
+        }
+
+    }
 
     @Override
     public Object apply(Object value) {
@@ -31,29 +58,28 @@ public class ListOutFilter extends BasePipeFilter<Object, Object> {
         }
 
         if (!(value instanceof Collection)) {
-            return "list-out filter input object is not collection";
+            throw new RuntimeException("错误:传入数据不是集合");
         }
 
         @SuppressWarnings("unchecked")
         List<Object> collection = (List<Object>) value;
 
         if (PipeFilterUtils.isEmpty(collection)) {
-            return "list-out filter input object is empty";
+            throw new RuntimeException("错误:传入集合为空");
         }
 
         if (PipeFilterUtils.isEmpty(params())) {
-            return collection.stream().map(String::valueOf).collect(Collectors.joining(DELIMITER_WRAP));
+            return collection.stream().map(String::valueOf).collect(Collectors.joining(Delimiter.WRAP.delimiter));
         }
 
         String delimiter = params().get(0);
-        if (WRAP.equalsIgnoreCase(delimiter)) {
-            return collection.stream().map(String::valueOf).collect(Collectors.joining(DELIMITER_WRAP));
-        }
-        if (COMMA.equalsIgnoreCase(delimiter)) {
-            return collection.stream().map(String::valueOf).collect(Collectors.joining(DELIMITER_COMMA));
+
+        Delimiter delimiterEnum = Delimiter.ofValue(delimiter);
+        if (Objects.nonNull(delimiterEnum)) {
+            return collection.stream().map(String::valueOf).collect(Collectors.joining(delimiterEnum.delimiter));
         }
 
-        return "The parameters of the list out filter are incorrect, for example: list-out:comma or list-out:wrap";
+        throw new RuntimeException("错误:指令格式错误，example: list-out:comma, list-out:wrap or list-out:blank");
 
     }
 }

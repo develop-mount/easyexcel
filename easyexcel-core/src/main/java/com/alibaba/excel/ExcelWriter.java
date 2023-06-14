@@ -2,14 +2,19 @@ package com.alibaba.excel;
 
 import java.io.Closeable;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.write.ExcelBuilder;
 import com.alibaba.excel.write.ExcelBuilderImpl;
+import com.alibaba.excel.write.executor.ExcelWriteFillExecutor;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
+import com.alibaba.excel.write.metadata.fill.AnalysisCell;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 
 import lombok.extern.slf4j.Slf4j;
@@ -134,6 +139,15 @@ public class ExcelWriter implements Closeable {
     public ExcelWriter fill(Supplier<Object> supplier, FillConfig fillConfig, WriteSheet writeSheet) {
         excelBuilder.fill(supplier.get(), fillConfig, writeSheet);
         return this;
+    }
+
+    /**
+     * 得到fill 错误消息
+     *
+     * @return 错误消息
+     */
+    public Map<ExcelWriteFillExecutor.UniqueDataFlagKey, List<AnalysisCell>> fillMessage() {
+        return excelBuilder.fillMessage();
     }
 
     /**

@@ -10,7 +10,9 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.enums.WriteDirectionEnum;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.util.MapUtils;
+import com.alibaba.excel.write.executor.ExcelWriteFillExecutor;
 import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.metadata.fill.AnalysisCell;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
 
@@ -75,7 +77,10 @@ public class FillTest {
         fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
         try (ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet().build();
-            excelWriter.fill(data(), writeSheet);
+            ExcelWriter writer =  excelWriter.fill(data(), writeSheet);
+            // 错误信息
+            Map<ExcelWriteFillExecutor.UniqueDataFlagKey, List<AnalysisCell>> uniqueDataFlagKeyListMap = writer.fillMessage();
+
             excelWriter.fill(data(), writeSheet);
         }
     }

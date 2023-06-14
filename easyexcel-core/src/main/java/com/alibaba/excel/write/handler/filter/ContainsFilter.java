@@ -6,8 +6,6 @@ import com.alibaba.excel.write.handler.BasePipeFilter;
 
 import java.util.Collection;
 import java.util.Objects;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -19,7 +17,6 @@ import java.util.stream.Collectors;
 public class ContainsFilter extends BasePipeFilter<Object, Object> {
 
 
-
     @Override
     public Object apply(Object value) {
 
@@ -28,7 +25,7 @@ public class ContainsFilter extends BasePipeFilter<Object, Object> {
         }
 
         if (PipeFilterUtils.isEmpty(params())) {
-            return value;
+            throw new RuntimeException("错误:contains指令缺失参数");
         }
 
         if (value instanceof Collection) {
@@ -50,7 +47,7 @@ public class ContainsFilter extends BasePipeFilter<Object, Object> {
                     }
                 }
             }
-            return String.format("错误:没有匹配到[%s]结果", String.join(",", params()));
+            throw new RuntimeException(String.format("错误:contains指令没有匹配到[%s]结果", String.join(",", params())));
         } else if (value instanceof String) {
 
             String col = (String) value;
@@ -62,10 +59,10 @@ public class ContainsFilter extends BasePipeFilter<Object, Object> {
                     return col;
                 }
             }
-            return String.format("错误:没有匹配到[%s]结果", String.join(",", params()));
+            throw new RuntimeException(String.format("错误:contains指令没有匹配到[%s]结果", String.join(",", params())));
         } else {
 
-            return "错误:传入数据不是集合或字符串";
+            throw new RuntimeException("错误:contains指令传入数据不是集合或字符串");
         }
     }
 }

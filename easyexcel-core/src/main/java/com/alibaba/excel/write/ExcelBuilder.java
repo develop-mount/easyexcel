@@ -1,11 +1,15 @@
 package com.alibaba.excel.write;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import com.alibaba.excel.context.WriteContext;
+import com.alibaba.excel.write.executor.ExcelWriteFillExecutor;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
+import com.alibaba.excel.write.metadata.fill.AnalysisCell;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 
 /**
@@ -45,6 +49,12 @@ public interface ExcelBuilder {
      * @param writeSheet
      */
     void fill(Object data, FillConfig fillConfig, WriteSheet writeSheet);
+
+    /**
+     * 得到fill 错误消息
+     * @return 错误消息
+     */
+    Map<ExcelWriteFillExecutor.UniqueDataFlagKey, List<AnalysisCell>> fillMessage();
 
     /**
      * Creates new cell range. Indexes are zero-based.

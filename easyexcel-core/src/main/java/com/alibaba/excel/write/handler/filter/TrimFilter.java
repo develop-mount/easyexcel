@@ -1,10 +1,8 @@
 package com.alibaba.excel.write.handler.filter;
 
-import com.alibaba.excel.exception.ExcelRuntimeException;
 import com.alibaba.excel.write.handler.BasePipeFilter;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -34,6 +32,6 @@ public class TrimFilter extends BasePipeFilter<Object, Object> {
             return valList.stream().filter(Objects::nonNull).map(str -> str.toString().trim()).collect(Collectors.toList());
         }
 
-        return "trim filter input object is not collection or string";
+        throw new RuntimeException("错误:trim指令输入数据不是字符串或集合");
     }
 }

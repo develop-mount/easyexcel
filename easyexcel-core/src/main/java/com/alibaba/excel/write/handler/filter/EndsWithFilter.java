@@ -1,12 +1,10 @@
 package com.alibaba.excel.write.handler.filter;
 
-import com.alibaba.excel.exception.ExcelRuntimeException;
 import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -26,7 +24,7 @@ public class EndsWithFilter extends BasePipeFilter<Object, Object> {
         }
 
         if (PipeFilterUtils.isEmpty(params())) {
-            return value;
+            throw new RuntimeException("错误:ends-with指令缺失参数,例如 ends-with:xxxx");
         }
 
         if (value instanceof Collection) {
@@ -48,7 +46,7 @@ public class EndsWithFilter extends BasePipeFilter<Object, Object> {
                     }
                 }
             }
-            return "没有匹配到结果";
+            throw new RuntimeException(String.format("错误:ends-with指令没有匹配[%s]到结果", String.join(",", params())));
         } else if (value instanceof String) {
 
             String col = (String) value;
@@ -60,10 +58,10 @@ public class EndsWithFilter extends BasePipeFilter<Object, Object> {
                     return col;
                 }
             }
-            return "没有匹配到结果";
+            throw new RuntimeException(String.format("错误:ends-with指令没有匹配[%s]到结果", String.join(",", params())));
         } else {
 
-            return "starts-with filter input object is not collection or string";
+            throw new RuntimeException("错误:ends-with指令输入数据不是字符串或集合");
         }
     }
 }

@@ -32,9 +32,9 @@ public class DateFormatFilter extends BasePipeFilter<Object, Object> {
             Date date = (Date) value;
             return DateUtils.format(date, format);
         } else if (value instanceof String) {
-            
+
             return value;
         }
-        return "date-format filter input object is not date or string";
+        throw new RuntimeException("错误:date-format指令传入数据不是Date或字符串");
     }
 }

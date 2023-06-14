@@ -27,21 +27,19 @@ public class ListIndexFilter extends BasePipeFilter<Object, Object> {
         }
 
         if (!(value instanceof Collection)) {
-            return "list-index filter input object is not collection";
+            throw new RuntimeException("错误:list-index:传入数据不是集合");
         }
 
         @SuppressWarnings("unchecked")
         List<Object> collection = (List<Object>) value;
 
         if (PipeFilterUtils.isEmpty(params()) || params().size() > 1) {
-            log.warn("list-index filter has empty or more than one parameter, taking the first element of the set");
-            return collection.get(0);
+            throw new RuntimeException("错误:list-index:传入参数下标为空或是超过一个");
         }
 
         String index = params().get(0);
         if (StringUtils.isBlank(index)) {
-            log.warn("list-index filter has empty or more than one parameter, taking the first element of the set");
-            return collection.get(0);
+            throw new RuntimeException("错误:传入参数下标为空");
         }
 
         try {
@@ -55,7 +53,7 @@ public class ListIndexFilter extends BasePipeFilter<Object, Object> {
             return collection.get(ind);
         } catch (NumberFormatException e) {
             log.warn(e.getMessage(), e);
+            throw new RuntimeException("错误:list-index:下标转换错误");
         }
-        return collection.get(0);
     }
 }

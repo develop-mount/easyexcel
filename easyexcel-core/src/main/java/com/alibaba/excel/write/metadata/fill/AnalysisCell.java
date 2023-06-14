@@ -25,6 +25,10 @@ public class AnalysisCell {
     private WriteTemplateAnalysisCellTypeEnum cellType;
     private String prefix;
     private Boolean firstRow;
+    /**
+     * 错误消息
+     */
+    private String message;
 
     @Override
     public boolean equals(Object o) {

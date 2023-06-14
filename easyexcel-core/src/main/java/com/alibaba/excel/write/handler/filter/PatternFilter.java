@@ -27,7 +27,7 @@ public class PatternFilter extends BasePipeFilter<Object, Object> {
         }
 
         if (PipeFilterUtils.isEmpty(params())) {
-            return value;
+            throw new RuntimeException("错误:pattern指令缺失参数");
         }
 
         if (value instanceof Collection) {
@@ -50,7 +50,7 @@ public class PatternFilter extends BasePipeFilter<Object, Object> {
                     }
                 }
             }
-            return "没有匹配到结果";
+            throw new RuntimeException(String.format("错误:pattern指令没有匹配[%s]到结果", String.join(",", params())));
         } else if (value instanceof String) {
             String col = (String) value;
             for (String regex : params()) {
@@ -61,8 +61,9 @@ public class PatternFilter extends BasePipeFilter<Object, Object> {
                     return col;
                 }
             }
-            return "没有匹配到结果";
+            throw new RuntimeException(String.format("错误:pattern指令没有匹配[%s]到结果", String.join(",", params())));
         }
-        return "pattern filter input object is not collection or string";
+
+        throw new RuntimeException("错误:pattern指令输入数据不是字符串或集合");
     }
 }
