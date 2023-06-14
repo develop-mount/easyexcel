@@ -3,31 +3,35 @@ package com.alibaba.excel.write.handler.filter;
 import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
+import com.alibaba.excel.write.handler.PipeDataWrapper;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Description:
+ * 优先模式匹配
  *
  * @author linfeng
  * @version 1.0.0
  * @since 2023/5/29 14:48
  */
-public class PatternFilter extends BasePipeFilter<Object, Object> {
+public class PriorPatternFilter extends BasePipeFilter<Object, Object> {
     @Override
-    public Object apply(Object value) {
+    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
 
+        if (!verify(wrapper)) {
+            return wrapper;
+        }
+
+        Object value = wrapper.getData();
         if (Objects.isNull(value)) {
-            return "";
+            return PipeDataWrapper.error("prior-pattern错误:传入数据不能为空");
         }
 
         if (PipeFilterUtils.isEmpty(params())) {
-            throw new RuntimeException("错误:pattern指令缺失参数");
+            return PipeDataWrapper.error("prior-pattern错误:指令缺失参数");
         }
 
         if (value instanceof Collection) {
@@ -45,12 +49,12 @@ public class PatternFilter extends BasePipeFilter<Object, Object> {
                             continue;
                         }
                         if (Pattern.matches(regex, cel)) {
-                            return cel;
+                            return PipeDataWrapper.success(col);
                         }
                     }
                 }
             }
-            throw new RuntimeException(String.format("错误:pattern指令没有匹配[%s]到结果", String.join(",", params())));
+            return PipeDataWrapper.error(String.format("错误:prior-pattern指令没有匹配[%s]到结果", String.join(",", params())));
         } else if (value instanceof String) {
             String col = (String) value;
             for (String regex : params()) {
@@ -58,12 +62,12 @@ public class PatternFilter extends BasePipeFilter<Object, Object> {
                     continue;
                 }
                 if (Pattern.matches(regex, col)) {
-                    return col;
+                    return PipeDataWrapper.success(col);
                 }
             }
-            throw new RuntimeException(String.format("错误:pattern指令没有匹配[%s]到结果", String.join(",", params())));
+            return PipeDataWrapper.error(String.format("错误:prior-pattern指令没有匹配[%s]到结果", String.join(",", params())));
         }
 
-        throw new RuntimeException("错误:pattern指令输入数据不是字符串或集合");
+        return PipeDataWrapper.error("错误:prior-pattern指令输入数据不是字符串或集合");
     }
 }

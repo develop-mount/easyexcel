@@ -3,32 +3,84 @@ package com.alibaba.excel.write.handler.filter;
 import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
+import com.alibaba.excel.write.handler.PipeDataWrapper;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * Description:
+ * starts-with
  *
  * @author linfeng
  * @version 1.0.0
- * @since 2023/5/28 15:52
+ * @since 2023/5/30 10:37
  */
 public class StartsWithFilter extends BasePipeFilter<Object, Object> {
 
     @Override
-    public Object apply(Object value) {
+    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
 
-        if (Objects.isNull(value)) {
-            return "";
+        // 验证
+        if (!verify(wrapper)) {
+            return wrapper;
         }
 
         if (PipeFilterUtils.isEmpty(params())) {
-            throw new RuntimeException("错误:starts-with指令缺失参数");
+            return PipeDataWrapper.error("starts-with错误:指令缺失参数");
         }
 
+        Object value = wrapper.getData();
+        if (Objects.isNull(value)) {
+            return PipeDataWrapper.error("starts-with错误:传入数据不能为空");
+        }
+
+        if (params().size() == 1) {
+
+            String center = params().get(0);
+            if (StringUtils.isBlank(center)) {
+                return PipeDataWrapper.error("starts-with错误:指令参数不能为空");
+            }
+
+            return instructHandle(value, center);
+        } else {
+
+            List<Object> result = new ArrayList<>();
+            List<String> error = new ArrayList<>();
+            for (String center : params()) {
+                if (Objects.isNull(center)) {
+                    continue;
+                }
+                PipeDataWrapper<Object> itemDataWrapper = instructHandle(value, center);
+                if (itemDataWrapper.success()) {
+                    result.add(itemDataWrapper.getData());
+                } else {
+                    error.add(itemDataWrapper.getMessage());
+                }
+            }
+            if (CollectionUtils.isEmpty(error)) {
+                return PipeDataWrapper.success(result);
+            } else {
+                return PipeDataWrapper.error("starts-with错误:" + String.join(",", error), result);
+            }
+        }
+    }
+
+    /**
+     * 指令处理
+     *
+     * @param value  待处理的值
+     * @param center 待匹配的字符串
+     * @return 数据包裹
+     */
+    private PipeDataWrapper<Object> instructHandle(Object value, String center) {
+
         if (value instanceof Collection) {
-            @SuppressWarnings("unchecked")
+            String result = null;
+            //noinspection unchecked
             Collection<Object> collection = (Collection<Object>) value;
             for (Object col : collection) {
                 if (Objects.isNull(col)) {
@@ -36,32 +88,26 @@ public class StartsWithFilter extends BasePipeFilter<Object, Object> {
                 }
                 if (col instanceof String) {
                     String cel = (String) col;
-                    for (String start : params()) {
-                        if (Objects.isNull(start)) {
-                            continue;
-                        }
-                        if (cel.startsWith(start)) {
-                            return cel;
-                        }
+                    if (cel.startsWith(center)) {
+                        result = cel;
+                        break;
                     }
                 }
             }
-            throw new RuntimeException(String.format("错误:starts-with指令没有匹配[%s]到结果", String.join(",", params())));
-        } else if (value instanceof String) {
-
-            String col = (String) value;
-            for (String start : params()) {
-                if (StringUtils.isBlank(start)) {
-                    continue;
-                }
-                if (col.startsWith(start)) {
-                    return col;
-                }
+            if (StringUtils.isNotBlank(result)) {
+                return PipeDataWrapper.error(String.format("没有包含[%s]的数据", center));
+            } else {
+                return PipeDataWrapper.success(result);
             }
-            throw new RuntimeException(String.format("错误:starts-with指令没有匹配[%s]到结果", String.join(",", params())));
+        } else if (value instanceof String) {
+            String col = (String) value;
+            if (col.startsWith(center)) {
+                return PipeDataWrapper.success(col);
+            } else {
+                return PipeDataWrapper.error(String.format("没有包含[%s]的数据", center));
+            }
         } else {
-
-            throw new RuntimeException("错误:starts-with指令输入数据不是字符串或集合");
+            return PipeDataWrapper.error("starts-with错误:指令传入数据不是集合或字符串", value);
         }
     }
 }

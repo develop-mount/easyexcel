@@ -10,16 +10,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * Description:
- * ends-with
+ * pattern
  *
  * @author linfeng
  * @version 1.0.0
  * @since 2023/5/30 10:37
  */
-public class EndsWithFilter extends BasePipeFilter<Object, Object> {
+public class PatternWithFilter extends BasePipeFilter<Object, Object> {
 
     @Override
     public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
@@ -30,19 +31,19 @@ public class EndsWithFilter extends BasePipeFilter<Object, Object> {
         }
 
         if (PipeFilterUtils.isEmpty(params())) {
-            return PipeDataWrapper.error("ends-with错误:指令缺失参数");
+            return PipeDataWrapper.error("pattern错误:指令缺失参数");
         }
 
         Object value = wrapper.getData();
         if (Objects.isNull(value)) {
-            return PipeDataWrapper.error("ends-with错误:传入数据不能为空");
+            return PipeDataWrapper.error("pattern错误:传入数据不能为空");
         }
 
         if (params().size() == 1) {
 
             String center = params().get(0);
             if (StringUtils.isBlank(center)) {
-                return PipeDataWrapper.error("ends-with错误:指令参数不能为空");
+                return PipeDataWrapper.error("pattern错误:指令参数不能为空");
             }
 
             return instructHandle(value, center);
@@ -64,7 +65,7 @@ public class EndsWithFilter extends BasePipeFilter<Object, Object> {
             if (CollectionUtils.isEmpty(error)) {
                 return PipeDataWrapper.success(result);
             } else {
-                return PipeDataWrapper.error("ends-with错误:" + String.join(",", error), result);
+                return PipeDataWrapper.error("pattern错误:" + String.join(",", error), result);
             }
         }
     }
@@ -88,7 +89,7 @@ public class EndsWithFilter extends BasePipeFilter<Object, Object> {
                 }
                 if (col instanceof String) {
                     String cel = (String) col;
-                    if (cel.endsWith(center)) {
+                    if (Pattern.matches(center, cel)) {
                         result = cel;
                         break;
                     }
@@ -101,13 +102,13 @@ public class EndsWithFilter extends BasePipeFilter<Object, Object> {
             }
         } else if (value instanceof String) {
             String col = (String) value;
-            if (col.endsWith(center)) {
+            if (Pattern.matches(center, col)) {
                 return PipeDataWrapper.success(col);
             } else {
                 return PipeDataWrapper.error(String.format("没有包含[%s]的数据", center));
             }
         } else {
-            return PipeDataWrapper.error("ends-with错误:指令传入数据不是集合或字符串", value);
+            return PipeDataWrapper.error("pattern错误:指令传入数据不是集合或字符串", value);
         }
     }
 }

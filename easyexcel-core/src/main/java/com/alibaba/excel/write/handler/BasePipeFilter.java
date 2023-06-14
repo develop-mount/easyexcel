@@ -3,7 +3,7 @@ package com.alibaba.excel.write.handler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Objects;
 
 /**
  * Description:
@@ -35,5 +35,15 @@ public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
     public BasePipeFilter<T, R> addParams(String... params) {
         params().addAll(Arrays.asList(params));
         return this;
+    }
+
+    /**
+     * 验证
+     *
+     * @param wrapper 通道数据包装
+     * @return 是否成功
+     */
+    protected boolean verify(PipeDataWrapper<T> wrapper) {
+        return Objects.nonNull(wrapper) && wrapper.success();
     }
 }

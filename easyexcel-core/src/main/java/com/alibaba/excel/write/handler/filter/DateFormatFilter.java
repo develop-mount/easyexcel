@@ -4,8 +4,10 @@ import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
+import com.alibaba.excel.write.handler.PipeDataWrapper;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Description:
@@ -19,7 +21,17 @@ public class DateFormatFilter extends BasePipeFilter<Object, Object> {
     private static final String DEFAULT_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     @Override
-    public Object apply(Object value) {
+    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
+
+        // 验证
+        if (!verify(wrapper)) {
+            return wrapper;
+        }
+
+        Object value = wrapper.getData();
+        if (Objects.isNull(value)) {
+            return PipeDataWrapper.error("date-format错误:传入数据不能为空");
+        }
 
         if (value instanceof Date) {
 
@@ -30,11 +42,12 @@ public class DateFormatFilter extends BasePipeFilter<Object, Object> {
                 format = StringUtils.isBlank(params().get(0)) ? DEFAULT_FORMAT : params().get(0);
             }
             Date date = (Date) value;
-            return DateUtils.format(date, format);
+            return PipeDataWrapper.success(DateUtils.format(date, format));
         } else if (value instanceof String) {
 
-            return value;
+            return PipeDataWrapper.success(value);
         }
-        throw new RuntimeException("错误:date-format指令传入数据不是Date或字符串");
+
+        return PipeDataWrapper.error("date-format错误:指令传入数据不是Date或字符串");
     }
 }

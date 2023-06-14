@@ -25,6 +25,7 @@ import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WriteHandlerUtils;
+import com.alibaba.excel.write.handler.PipeDataWrapper;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
 import com.alibaba.excel.write.metadata.fill.AnalysisCell;
@@ -240,7 +241,13 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 if (PipeFilterUtils.isPipeline(variable)) {
                     value = PipeFilterUtils.getValueOfMap(dataMap, PipeFilterUtils.getVariableName(variable));
                     try {
-                        value = PipeFilterFactory.createPipeFilter(writeContext).addParams(variable).apply(value);
+                        PipeDataWrapper<Object> wrapper = PipeFilterFactory.createPipeFilter(writeContext).addParams(variable).apply(PipeDataWrapper.success(value));
+                        if (wrapper.success()) {
+                            value = wrapper.getData();
+                        } else {
+                            value = wrapper.getData();
+                            analysisCell.setMessage(wrapper.getMessage());
+                        }
                     } catch (Exception e) {
                         value = "";
                         analysisCell.setMessage(e.getMessage());
@@ -287,7 +294,13 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     if (PipeFilterUtils.isPipeline(variable)) {
                         value = PipeFilterUtils.getValueOfMap(dataMap, PipeFilterUtils.getVariableName(variable));
                         try {
-                            value = PipeFilterFactory.createPipeFilter(writeContext).addParams(variable).apply(value);
+                            PipeDataWrapper<Object> wrapper = PipeFilterFactory.createPipeFilter(writeContext).addParams(variable).apply(PipeDataWrapper.success(value));
+                            if (wrapper.success()) {
+                                value = wrapper.getData();
+                            } else {
+                                value = wrapper.getData();
+                                analysisCell.setMessage(wrapper.getMessage());
+                            }
                         } catch (Exception e) {
                             value = "";
                             analysisCell.setMessage(e.getMessage());

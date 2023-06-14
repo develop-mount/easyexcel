@@ -11,7 +11,16 @@ import java.util.function.Function;
  * @version 1.0.0
  * @since 2023/5/29 10:13
  */
-public interface PipeFilter<T, R> extends Function<T, R> {
+public interface PipeFilter<T, R> extends Function<PipeDataWrapper<T>, PipeDataWrapper<R>> {
+
+    /**
+     * 执行具体方法
+     *
+     * @param wrapper the function argument
+     * @return
+     */
+    @Override
+    PipeDataWrapper<R> apply(PipeDataWrapper<T> wrapper);
 
     /**
      * filter 参数集合

@@ -24,13 +24,18 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
     static {
         // 初始化内置管道过滤器
         PIPE_FILTER_MAP.put("trim", TrimFilter::new);
-        PIPE_FILTER_MAP.put("ends-with", EndsWithFilter::new);
-        PIPE_FILTER_MAP.put("starts-with", StartsWithFilter::new);
-        PIPE_FILTER_MAP.put("pattern", PatternFilter::new);
+        PIPE_FILTER_MAP.put("ends-with", PriorEndsWithFilter::new);
+        PIPE_FILTER_MAP.put("prior-ends-with", PriorEndsWithFilter::new);
+        PIPE_FILTER_MAP.put("starts-with", PriorStartsWithFilter::new);
+        PIPE_FILTER_MAP.put("prior-starts-with", PriorStartsWithFilter::new);
+        PIPE_FILTER_MAP.put("pattern", PriorPatternFilter::new);
+        PIPE_FILTER_MAP.put("prior-pattern", PriorPatternFilter::new);
         PIPE_FILTER_MAP.put("date-format", DateFormatFilter::new);
-        PIPE_FILTER_MAP.put("contains", ContainsFilter::new);
+        PIPE_FILTER_MAP.put("contains", PriorContainsFilter::new);
+        PIPE_FILTER_MAP.put("prior-contains", PriorContainsFilter::new);
         PIPE_FILTER_MAP.put("list-index", ListIndexFilter::new);
         PIPE_FILTER_MAP.put("list-out", ListOutFilter::new);
+        PIPE_FILTER_MAP.put("list-range", ListRangeFilter::new);
     }
 
     private PipeFilterFactory(WriteContext writeContext) {
@@ -53,7 +58,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
     }
 
     @Override
-    public Object apply(Object value) {
+    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> value) {
 
         if (PipeFilterUtils.isEmpty(params())) {
             throw new ExcelRuntimeException("管道字符串格式不正确");
@@ -104,7 +109,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
             return value;
         }
         // 构建pipeline
-        Function<Object, Object> currFilter = pipeFilterList.get(0);
+        Function<PipeDataWrapper<Object>, PipeDataWrapper<Object>> currFilter = pipeFilterList.get(0);
         for (int i = 1; i < pipeFilterList.size(); i++) {
             currFilter = currFilter.andThen(pipeFilterList.get(i));
         }

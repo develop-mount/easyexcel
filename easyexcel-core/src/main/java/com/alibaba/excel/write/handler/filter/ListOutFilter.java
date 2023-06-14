@@ -2,6 +2,7 @@ package com.alibaba.excel.write.handler.filter;
 
 import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
+import com.alibaba.excel.write.handler.PipeDataWrapper;
 
 import java.util.Collection;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 
 /**
  * Description:
+ * list-out
  *
  * @author linfeng
  * @version 1.0.0
@@ -51,35 +53,40 @@ public class ListOutFilter extends BasePipeFilter<Object, Object> {
     }
 
     @Override
-    public Object apply(Object value) {
+    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
 
+        // 验证
+        if (!verify(wrapper)) {
+            return wrapper;
+        }
+
+        Object value = wrapper.getData();
         if (Objects.isNull(value)) {
-            return "";
+            return PipeDataWrapper.error("list-out错误:传入数据不能为空");
         }
 
         if (!(value instanceof Collection)) {
-            throw new RuntimeException("错误:传入数据不是集合");
+            return PipeDataWrapper.error("list-out错误:传入数据不是集合");
         }
 
         @SuppressWarnings("unchecked")
         List<Object> collection = (List<Object>) value;
 
         if (PipeFilterUtils.isEmpty(collection)) {
-            throw new RuntimeException("错误:传入集合为空");
+            return PipeDataWrapper.error("list-out错误:传入集合为空");
         }
 
         if (PipeFilterUtils.isEmpty(params())) {
-            return collection.stream().map(String::valueOf).collect(Collectors.joining(Delimiter.WRAP.delimiter));
+            return PipeDataWrapper.success(collection.stream().map(String::valueOf).collect(Collectors.joining(Delimiter.WRAP.delimiter)));
         }
 
         String delimiter = params().get(0);
 
         Delimiter delimiterEnum = Delimiter.ofValue(delimiter);
         if (Objects.nonNull(delimiterEnum)) {
-            return collection.stream().map(String::valueOf).collect(Collectors.joining(delimiterEnum.delimiter));
+            return PipeDataWrapper.success(collection.stream().map(String::valueOf).collect(Collectors.joining(delimiterEnum.delimiter)));
         }
 
-        throw new RuntimeException("错误:指令格式错误，example: list-out:comma, list-out:wrap or list-out:blank");
-
+        return PipeDataWrapper.error("list-out错误:指令格式错误，example: list-out:comma, list-out:wrap or list-out:blank");
     }
 }

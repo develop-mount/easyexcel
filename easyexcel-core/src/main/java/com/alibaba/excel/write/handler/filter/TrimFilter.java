@@ -1,6 +1,8 @@
 package com.alibaba.excel.write.handler.filter;
 
 import com.alibaba.excel.write.handler.BasePipeFilter;
+import com.alibaba.excel.write.handler.PipeDataWrapper;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -17,21 +19,30 @@ import java.util.stream.Collectors;
 public class TrimFilter extends BasePipeFilter<Object, Object> {
 
     @Override
-    public Object apply(Object value) {
+    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
 
+        // 验证
+        if (!verify(wrapper)) {
+            return wrapper;
+        }
+
+        Object value = wrapper.getData();
         if (Objects.isNull(value)) {
-            return "";
+            return PipeDataWrapper.error("trim错误:传入数据不能为空");
         }
 
         if (value instanceof String) {
 
-            return value.toString().trim();
+            return PipeDataWrapper.success(value.toString().trim());
         } else if (value instanceof Collection) {
             //noinspection unchecked
             Collection<Object> valList = (Collection<Object>) value;
-            return valList.stream().filter(Objects::nonNull).map(str -> str.toString().trim()).collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(valList)) {
+                return PipeDataWrapper.error("trim错误:传入数据不能为空");
+            }
+            return PipeDataWrapper.success(valList.stream().filter(Objects::nonNull).map(str -> str.toString().trim()).collect(Collectors.toList()));
         }
 
-        throw new RuntimeException("错误:trim指令输入数据不是字符串或集合");
+        return PipeDataWrapper.error("trim错误:指令输入数据不是字符串或集合");
     }
 }

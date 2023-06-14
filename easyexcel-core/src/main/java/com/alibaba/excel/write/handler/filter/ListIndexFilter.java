@@ -3,7 +3,9 @@ package com.alibaba.excel.write.handler.filter;
 import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
+import com.alibaba.excel.write.handler.PipeDataWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,27 +21,47 @@ import java.util.Objects;
 @Slf4j
 public class ListIndexFilter extends BasePipeFilter<Object, Object> {
 
+    /**
+     * 参数格式  list-index:n n表示下标，从1开始
+     *
+     * @param wrapper the function argument
+     * @return
+     */
     @Override
-    public Object apply(Object value) {
+    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
 
+        // 验证
+        if (!verify(wrapper)) {
+            return wrapper;
+        }
+
+        if (PipeFilterUtils.isEmpty(params())) {
+            return PipeDataWrapper.error("list-index错误:指令缺失参数");
+        }
+
+        Object value = wrapper.getData();
         if (Objects.isNull(value)) {
-            return "";
+            return PipeDataWrapper.error("list-index错误:传入数据不能为空");
         }
 
         if (!(value instanceof Collection)) {
-            throw new RuntimeException("错误:list-index:传入数据不是集合");
+            return PipeDataWrapper.error("list-index错误:传入数据不是集合");
         }
 
         @SuppressWarnings("unchecked")
         List<Object> collection = (List<Object>) value;
 
+        if (CollectionUtils.isEmpty(collection)) {
+            return PipeDataWrapper.error("list-index错误:传入数据不能为空");
+        }
+
         if (PipeFilterUtils.isEmpty(params()) || params().size() > 1) {
-            throw new RuntimeException("错误:list-index:传入参数下标为空或是超过一个");
+            return PipeDataWrapper.error("list-index错误:传入参数下标为空或是超过一个");
         }
 
         String index = params().get(0);
         if (StringUtils.isBlank(index)) {
-            throw new RuntimeException("错误:传入参数下标为空");
+            return PipeDataWrapper.error("list-index错误:传入参数下标为空");
         }
 
         try {
@@ -50,10 +72,15 @@ public class ListIndexFilter extends BasePipeFilter<Object, Object> {
             if (ind >= 1) {
                 ind -= 1;
             }
-            return collection.get(ind);
+            if (ind >= collection.size()) {
+                return PipeDataWrapper.error("list-index错误:传入参数下标为空");
+            }
+
+            return PipeDataWrapper.success(collection.get(ind));
         } catch (NumberFormatException e) {
+
             log.warn(e.getMessage(), e);
-            throw new RuntimeException("错误:list-index:下标转换错误");
+            return PipeDataWrapper.error("list-index错误:下标转换错误");
         }
     }
 }
