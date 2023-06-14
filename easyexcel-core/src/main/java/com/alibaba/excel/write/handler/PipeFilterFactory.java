@@ -24,14 +24,14 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
     static {
         // 初始化内置管道过滤器
         PIPE_FILTER_MAP.put("trim", TrimFilter::new);
-        PIPE_FILTER_MAP.put("ends-with", PriorEndsWithFilter::new);
+        PIPE_FILTER_MAP.put("ends-with", EndsWithFilter::new);
         PIPE_FILTER_MAP.put("prior-ends-with", PriorEndsWithFilter::new);
-        PIPE_FILTER_MAP.put("starts-with", PriorStartsWithFilter::new);
+        PIPE_FILTER_MAP.put("starts-with", StartsWithFilter::new);
         PIPE_FILTER_MAP.put("prior-starts-with", PriorStartsWithFilter::new);
-        PIPE_FILTER_MAP.put("pattern", PriorPatternFilter::new);
+        PIPE_FILTER_MAP.put("pattern", PatternFilter::new);
         PIPE_FILTER_MAP.put("prior-pattern", PriorPatternFilter::new);
         PIPE_FILTER_MAP.put("date-format", DateFormatFilter::new);
-        PIPE_FILTER_MAP.put("contains", PriorContainsFilter::new);
+        PIPE_FILTER_MAP.put("contains", ContainsFilter::new);
         PIPE_FILTER_MAP.put("prior-contains", PriorContainsFilter::new);
         PIPE_FILTER_MAP.put("list-index", ListIndexFilter::new);
         PIPE_FILTER_MAP.put("list-out", ListOutFilter::new);

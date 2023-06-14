@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * @version 1.0.0
  * @since 2023/5/30 10:37
  */
-public class PatternWithFilter extends BasePipeFilter<Object, Object> {
+public class PatternFilter extends BasePipeFilter<Object, Object> {
 
     @Override
     public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
