@@ -60,7 +60,7 @@ public class CellVariableUtils {
                 continue;
             }
             int collectPrefixIndex = variable.indexOf(COLLECTION_PREFIX);
-            if (collectPrefixIndex > -1) {
+            if (collectPrefixIndex == 0) {
                 variable = variable.substring(collectPrefixIndex + 1);
                 if (StringUtils.isEmpty(variable)) {
                     continue;
