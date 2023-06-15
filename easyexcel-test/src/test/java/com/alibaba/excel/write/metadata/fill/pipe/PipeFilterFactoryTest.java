@@ -1,5 +1,6 @@
 package com.alibaba.excel.write.metadata.fill.pipe;
 
+import com.alibaba.excel.write.handler.PipeDataWrapper;
 import com.alibaba.excel.write.handler.PipeFilterFactory;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +17,6 @@ class PipeFilterFactoryTest {
     void apply() {
         PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter(null);
         pipeFilterFactory.addParams(" test |  | trim : test1,test2 | ");
-        System.out.println(pipeFilterFactory.apply(" data "));
+        System.out.println(pipeFilterFactory.apply(PipeDataWrapper.success(" data ")));
     }
 }
