@@ -28,7 +28,7 @@ public class TrimFilter extends BasePipeFilter<Object, Object> {
 
         Object value = wrapper.getData();
         if (Objects.isNull(value)) {
-            return PipeDataWrapper.error("trim错误:传入数据不能为空");
+            return PipeDataWrapper.error(errorPrefix() + "传入数据不能为空");
         }
 
         if (value instanceof String) {
@@ -38,11 +38,16 @@ public class TrimFilter extends BasePipeFilter<Object, Object> {
             //noinspection unchecked
             Collection<Object> valList = (Collection<Object>) value;
             if (CollectionUtils.isEmpty(valList)) {
-                return PipeDataWrapper.error("trim错误:传入数据不能为空");
+                return PipeDataWrapper.error(errorPrefix() + "传入数据不能为空");
             }
             return PipeDataWrapper.success(valList.stream().filter(Objects::nonNull).map(str -> str.toString().trim()).collect(Collectors.toList()));
         }
 
-        return PipeDataWrapper.error("trim错误:指令输入数据不是字符串或集合");
+        return PipeDataWrapper.error(errorPrefix() + "指令输入数据不是字符串或集合");
+    }
+
+    @Override
+    protected String filterName() {
+        return "trim";
     }
 }

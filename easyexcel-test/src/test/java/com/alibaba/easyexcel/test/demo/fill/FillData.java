@@ -18,4 +18,5 @@ public class FillData {
     private double number;
     private Date date;
     private List<String> images;
+    private String error;
 }

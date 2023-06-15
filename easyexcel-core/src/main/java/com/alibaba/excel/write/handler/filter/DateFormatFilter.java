@@ -21,6 +21,11 @@ public class DateFormatFilter extends BasePipeFilter<Object, Object> {
     private static final String DEFAULT_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     @Override
+    protected String filterName() {
+        return "date-format";
+    }
+
+    @Override
     public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
 
         // 验证
@@ -30,7 +35,7 @@ public class DateFormatFilter extends BasePipeFilter<Object, Object> {
 
         Object value = wrapper.getData();
         if (Objects.isNull(value)) {
-            return PipeDataWrapper.error("date-format错误:传入数据不能为空");
+            return PipeDataWrapper.error(errorPrefix() + "传入数据不能为空");
         }
 
         if (value instanceof Date) {
@@ -48,6 +53,6 @@ public class DateFormatFilter extends BasePipeFilter<Object, Object> {
             return PipeDataWrapper.success(value);
         }
 
-        return PipeDataWrapper.error("date-format错误:指令传入数据不是Date或字符串");
+        return PipeDataWrapper.error(errorPrefix() + "指令传入数据不是Date或字符串");
     }
 }

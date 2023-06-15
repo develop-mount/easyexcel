@@ -36,32 +36,32 @@ public class ListIndexFilter extends BasePipeFilter<Object, Object> {
         }
 
         if (PipeFilterUtils.isEmpty(params())) {
-            return PipeDataWrapper.error("list-index错误:指令缺失参数");
+            return PipeDataWrapper.error(errorPrefix() + "指令缺失参数");
         }
 
         Object value = wrapper.getData();
         if (Objects.isNull(value)) {
-            return PipeDataWrapper.error("list-index错误:传入数据不能为空");
+            return PipeDataWrapper.error(errorPrefix() + "传入数据不能为空");
         }
 
         if (!(value instanceof Collection)) {
-            return PipeDataWrapper.error("list-index错误:传入数据不是集合");
+            return PipeDataWrapper.error(errorPrefix() + "传入数据不是集合");
         }
 
         @SuppressWarnings("unchecked")
         List<Object> collection = (List<Object>) value;
 
         if (CollectionUtils.isEmpty(collection)) {
-            return PipeDataWrapper.error("list-index错误:传入数据不能为空");
+            return PipeDataWrapper.error(errorPrefix() + "传入数据不能为空");
         }
 
         if (PipeFilterUtils.isEmpty(params()) || params().size() > 1) {
-            return PipeDataWrapper.error("list-index错误:传入参数下标为空或是超过一个");
+            return PipeDataWrapper.error(errorPrefix() + "传入参数下标为空或是超过一个");
         }
 
         String index = params().get(0);
         if (StringUtils.isBlank(index)) {
-            return PipeDataWrapper.error("list-index错误:传入参数下标为空");
+            return PipeDataWrapper.error(errorPrefix() + "传入参数下标为空");
         }
 
         try {
@@ -73,14 +73,19 @@ public class ListIndexFilter extends BasePipeFilter<Object, Object> {
                 ind -= 1;
             }
             if (ind >= collection.size()) {
-                return PipeDataWrapper.error("list-index错误:传入参数下标为空");
+                return PipeDataWrapper.error(errorPrefix() + "传入参数下标为空");
             }
 
             return PipeDataWrapper.success(collection.get(ind));
         } catch (NumberFormatException e) {
 
             log.warn(e.getMessage(), e);
-            return PipeDataWrapper.error("list-index错误:下标转换错误");
+            return PipeDataWrapper.error(errorPrefix() + "下标转换错误");
         }
+    }
+
+    @Override
+    protected String filterName() {
+        return "list-index";
     }
 }

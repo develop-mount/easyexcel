@@ -30,7 +30,7 @@ public abstract class BasePriorMatchFilter extends BaseMatchFilter {
                 return itemDataWrapper;
             }
         }
-        return PipeDataWrapper.error(String.format(filterName() + "错误:指令没有匹配到[%s]结果", String.join(",", params())));
+        return PipeDataWrapper.error(errorPrefix() + String.format("指令没有匹配到[%s]结果", String.join(",", params())));
     }
 
 }

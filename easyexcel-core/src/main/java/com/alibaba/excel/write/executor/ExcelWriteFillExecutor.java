@@ -39,6 +39,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
 import com.alibaba.excel.util.PoiUtils;
@@ -54,6 +55,7 @@ import org.apache.poi.ss.usermodel.Sheet;
  *
  * @author Jiaju Zhuang
  */
+@Slf4j
 public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
 
     private static final String ESCAPE_FILL_PREFIX = "\\\\\\{";
@@ -62,6 +64,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     private static final String FILL_SUFFIX = "}";
     private static final char IGNORE_CHAR = '\\';
     private static final String COLLECTION_PREFIX = ".";
+    private static final String DEFAULT_ERROR_FIELD = "error";
     /**
      * Fields to replace in the template
      */
@@ -92,6 +95,19 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
 
     public ExcelWriteFillExecutor(WriteContext writeContext) {
         super(writeContext);
+    }
+
+    /**
+     * 填充错误信息的字段名
+     */
+    private String fillErrorField;
+
+    public void setFillErrorField(String fillErrorField) {
+        this.fillErrorField = fillErrorField;
+    }
+
+    public String getFillErrorField() {
+        return StringUtils.isBlank(fillErrorField) ? DEFAULT_ERROR_FIELD : fillErrorField;
     }
 
     /**
@@ -218,8 +234,10 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         if (CollectionUtils.isEmpty(analysisCellList) || oneRowData == null) {
             return;
         }
+        //noinspection rawtypes
         Map dataMap;
         if (oneRowData instanceof Map) {
+            //noinspection rawtypes
             dataMap = (Map) oneRowData;
         } else {
             dataMap = BeanMapUtils.create(oneRowData);
@@ -241,15 +259,19 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 if (PipeFilterUtils.isPipeline(variable)) {
                     value = PipeFilterUtils.getValueOfMap(dataMap, PipeFilterUtils.getVariableName(variable));
                     try {
-                        PipeDataWrapper<Object> wrapper = PipeFilterFactory.createPipeFilter(writeContext).addParams(variable).apply(PipeDataWrapper.success(value));
+                        PipeDataWrapper<Object> wrapper = PipeFilterFactory.createPipeFilter(writeContext)
+                            .setCell(analysisCell.getRowIndex(), analysisCell.getColumnIndex())
+                            .addParams(variable).apply(PipeDataWrapper.success(value));
                         if (wrapper.success()) {
                             value = wrapper.getData();
                         } else {
                             value = wrapper.getData();
+                            fillError2DataMap(dataMap, wrapper.getMessage());
                             analysisCell.setMessage(wrapper.getMessage());
                         }
                     } catch (Exception e) {
                         value = "";
+                        fillError2DataMap(dataMap, e.getMessage());
                         analysisCell.setMessage(e.getMessage());
                     }
                 } else {
@@ -294,15 +316,19 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     if (PipeFilterUtils.isPipeline(variable)) {
                         value = PipeFilterUtils.getValueOfMap(dataMap, PipeFilterUtils.getVariableName(variable));
                         try {
-                            PipeDataWrapper<Object> wrapper = PipeFilterFactory.createPipeFilter(writeContext).addParams(variable).apply(PipeDataWrapper.success(value));
+                            PipeDataWrapper<Object> wrapper = PipeFilterFactory.createPipeFilter(writeContext)
+                                .setCell(analysisCell.getRowIndex(), analysisCell.getColumnIndex())
+                                .addParams(variable).apply(PipeDataWrapper.success(value));
                             if (wrapper.success()) {
                                 value = wrapper.getData();
                             } else {
                                 value = wrapper.getData();
+                                fillError2DataMap(dataMap, wrapper.getMessage());
                                 analysisCell.setMessage(wrapper.getMessage());
                             }
                         } catch (Exception e) {
                             value = "";
+                            fillError2DataMap(dataMap, e.getMessage());
                             analysisCell.setMessage(e.getMessage());
                         }
                     } else {
@@ -358,6 +384,26 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         // In the case of the fill line may be called many times
         if (rowWriteHandlerContext.getRow() != null) {
             WriteHandlerUtils.afterRowDispose(rowWriteHandlerContext);
+        }
+    }
+
+    /**
+     * 填充错误信息到数据map中，用于后续填充excel
+     *
+     * @param dataMap 待填充excel的数据
+     * @param msg     消息
+     */
+    private void fillError2DataMap(@SuppressWarnings("rawtypes") Map dataMap, String msg) {
+        if (dataMap.containsKey(getFillErrorField())) {
+            Object errorData = dataMap.get(getFillErrorField());
+            if (Objects.nonNull(errorData)) {
+
+                //noinspection unchecked
+                dataMap.put(getFillErrorField(), errorData + "," + msg);
+            } else {
+                //noinspection unchecked
+                dataMap.put(getFillErrorField(), msg);
+            }
         }
     }
 

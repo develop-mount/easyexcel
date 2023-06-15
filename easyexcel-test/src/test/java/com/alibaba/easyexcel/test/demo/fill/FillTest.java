@@ -2,7 +2,6 @@ package com.alibaba.easyexcel.test.demo.fill;
 
 import java.io.File;
 import java.util.*;
-import java.util.function.Function;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
@@ -10,6 +9,7 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.enums.WriteDirectionEnum;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.util.MapUtils;
+import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.executor.ExcelWriteFillExecutor;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.AnalysisCell;
@@ -237,15 +237,18 @@ public class FillTest {
         // 方案1 一下子全部放到内存里面 并填充
         String fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
         // 这里 会填充到第一个sheet， 然后文件流会自动关闭
-        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(dataPipe());
+        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().autoFillError("error").doFill(dataPipe());
 //        EasyExcel.write(fileName).registerPipeFilterHandler("nama", null).withTemplate(templateFileName).sheet().doFill(dataPipe());
 
-//        // 方案2 分多次 填充 会使用文件缓存（省内存）
+        // 方案2 分多次 填充 会使用文件缓存（省内存）
 //        fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
 //        try (ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build()) {
 //            WriteSheet writeSheet = EasyExcel.writerSheet().build();
-//            excelWriter.fill(data(), writeSheet);
-//            excelWriter.fill(data(), writeSheet);
+//
+//            excelWriter.autoFillError("error");
+//            excelWriter.fill(dataPipe(), writeSheet);
+//
+//            excelWriter.fill(dataPipe(), writeSheet);
 //        }
     }
 
@@ -299,11 +302,20 @@ public class FillTest {
             fillData.setName(" 张三 ");
             fillData.setNumber(5.2);
             fillData.setDate(new Date());
-            fillData.setImages(Arrays.asList("http://www.baidu.com/images/m100-1.1.jpg"
-                , "http://www.baidu.com/images/m100-1.2.jpg"
-                , "http://www.baidu.com/images/m100-1.3.jpg"
-                , "http://www.baidu.com/images/m100-1.4.jpg"
-                , "http://www.baidu.com/images/m100-1.5.jpg"));
+            if (i == 0) {
+                fillData.setImages(Arrays.asList("http://www.baidu.com/images/m100-1.1.jpg"
+                    , "http://www.baidu.com/images/m100-1.2.jpg"
+                    , "http://www.baidu.com/images/m100-1.3.jpg"
+                    , "http://www.baidu.com/images/m100-1.4.jpg"
+                    , "http://www.baidu.com/images/m100-1.5.jpg"));
+            } else {
+                fillData.setImages(Arrays.asList("http://www.baidu.com/images/m100-1.1.jpg"
+                    , "http://www.baidu.com/images/m100-1.2.jpg"
+                    , "http://www.baidu.com/images/m100-1.3.jpg"
+                    , "http://www.baidu.com/images/m100-1.4.jpg"
+                    , "http://www.baidu.com/images/m100-1.5.jpg"
+                    , "http://www.baidu.com/images/K100-1.2.jpg"));
+            }
         }
         return list;
     }

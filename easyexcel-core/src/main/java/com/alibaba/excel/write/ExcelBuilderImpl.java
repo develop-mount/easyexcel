@@ -109,6 +109,14 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     }
 
     @Override
+    public void setAutoErrorField(String errorField) {
+        if (excelWriteFillExecutor == null) {
+            excelWriteFillExecutor = new ExcelWriteFillExecutor(context);
+        }
+        excelWriteFillExecutor.setFillErrorField(errorField);
+    }
+
+    @Override
     public void merge(int firstRow, int lastRow, int firstCol, int lastCol) {
         CellRangeAddress cra = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
         context.writeSheetHolder().getSheet().addMergedRegion(cra);

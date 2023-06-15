@@ -21,13 +21,6 @@ import java.util.Objects;
 public abstract class BaseMatchFilter extends BasePipeFilter<Object, Object> {
 
     /**
-     * filter名称
-     *
-     * @return 名称
-     */
-    protected abstract String filterName();
-
-    /**
      * 字符串匹配
      *
      * @param source 源字符串
@@ -45,12 +38,12 @@ public abstract class BaseMatchFilter extends BasePipeFilter<Object, Object> {
         }
 
         if (PipeFilterUtils.isEmpty(params())) {
-            return PipeDataWrapper.error(filterName() + "错误:指令缺失参数");
+            return PipeDataWrapper.error(errorPrefix() + "指令缺失参数");
         }
 
         Object value = wrapper.getData();
         if (Objects.isNull(value)) {
-            return PipeDataWrapper.error(filterName() + "错误:传入数据不能为空");
+            return PipeDataWrapper.error(errorPrefix() + "传入数据不能为空");
         }
 
         if (value instanceof String || value instanceof Collection) {
@@ -63,7 +56,7 @@ public abstract class BaseMatchFilter extends BasePipeFilter<Object, Object> {
                 return moreParamsHandle(value);
             }
         } else {
-            return PipeDataWrapper.error(filterName() + "错误:传入数据不是集合或字符串", value);
+            return PipeDataWrapper.error(errorPrefix() + "传入数据不是集合或字符串");
         }
     }
 
@@ -76,7 +69,7 @@ public abstract class BaseMatchFilter extends BasePipeFilter<Object, Object> {
     private PipeDataWrapper<Object> singleParamsHandle(Object value) {
         String center = params().get(0);
         if (StringUtils.isBlank(center)) {
-            return PipeDataWrapper.error(filterName() + "错误:指令参数不能为空");
+            return PipeDataWrapper.error(errorPrefix() + "指令参数不能为空");
         }
 
         return instructHandle(value, center);
@@ -105,7 +98,7 @@ public abstract class BaseMatchFilter extends BasePipeFilter<Object, Object> {
         if (CollectionUtils.isEmpty(error)) {
             return PipeDataWrapper.success(result);
         } else {
-            return PipeDataWrapper.error(filterName() + "错误:" + String.join(",", error), result);
+            return PipeDataWrapper.error(errorPrefix() + String.join(",", error), result);
         }
     }
 
@@ -135,7 +128,7 @@ public abstract class BaseMatchFilter extends BasePipeFilter<Object, Object> {
                 }
             }
             if (StringUtils.isBlank(result)) {
-                return PipeDataWrapper.error(String.format("没有包含[%s]的数据", center));
+                return PipeDataWrapper.error(errorPrefix() + String.format("没有包含[%s]的数据", center));
             } else {
                 return PipeDataWrapper.success(result);
             }
@@ -144,10 +137,10 @@ public abstract class BaseMatchFilter extends BasePipeFilter<Object, Object> {
             if (strMatch(col, center)) {
                 return PipeDataWrapper.success(col);
             } else {
-                return PipeDataWrapper.error(String.format("没有包含[%s]的数据", center));
+                return PipeDataWrapper.error(errorPrefix() + String.format("没有包含[%s]的数据", center));
             }
         } else {
-            return PipeDataWrapper.error("传入数据不是集合或字符串", value);
+            return PipeDataWrapper.error(errorPrefix() + "传入数据不是集合或字符串", value);
         }
     }
 

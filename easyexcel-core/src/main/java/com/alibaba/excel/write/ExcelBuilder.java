@@ -86,4 +86,9 @@ public interface ExcelBuilder {
      */
     void finish(boolean onException);
 
+    /**
+     * 自动填充错误，设置错误字段
+     * @param errorField 错误字段
+     */
+    void setAutoErrorField(String errorField);
 }

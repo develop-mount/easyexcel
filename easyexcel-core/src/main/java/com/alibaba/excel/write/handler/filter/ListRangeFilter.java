@@ -20,7 +20,7 @@ import java.util.Objects;
 @Slf4j
 public class ListRangeFilter extends BasePipeFilter<Object, Object> {
 
-    private static int PARAMS_NUM = 2;
+    private static final int PARAMS_NUM = 2;
 
     /**
      * list-range:index,count 从index开始，获取count个数量
@@ -38,28 +38,28 @@ public class ListRangeFilter extends BasePipeFilter<Object, Object> {
 
         Object value = wrapper.getData();
         if (Objects.isNull(value)) {
-            return PipeDataWrapper.error("list-range错误:传入数据不能为空");
+            return PipeDataWrapper.error(errorPrefix() + "传入数据不能为空");
         }
 
         if (!(value instanceof Collection)) {
-            return PipeDataWrapper.error("list-range错误:传入数据不是集合");
+            return PipeDataWrapper.error(errorPrefix() + "传入数据不是集合");
         }
 
         @SuppressWarnings("unchecked")
         List<Object> collection = (List<Object>) value;
 
         if (PipeFilterUtils.isEmpty(params()) || params().size() > PARAMS_NUM) {
-            return PipeDataWrapper.error("list-range错误:[list-range:index,count]传入参数下标为空或是超过两个");
+            return PipeDataWrapper.error(errorPrefix() + "[list-range:index,count]传入参数下标为空或是超过两个");
         }
 
         String index = params().get(0);
         if (StringUtils.isBlank(index)) {
-            return PipeDataWrapper.error("list-range错误:[list-range:index,count]中传入参数index为空");
+            return PipeDataWrapper.error(errorPrefix() + "[list-range:index,count]中传入参数index为空");
         }
 
         String count = params().get(1);
         if (StringUtils.isBlank(count)) {
-            return PipeDataWrapper.error("list-range错误:[list-range:index,count]中传入参数count为空");
+            return PipeDataWrapper.error(errorPrefix() + "[list-range:index,count]中传入参数count为空");
         }
 
         try {
@@ -73,7 +73,7 @@ public class ListRangeFilter extends BasePipeFilter<Object, Object> {
 
             int countInt = Integer.parseInt(count);
             if (countInt < 1) {
-                return PipeDataWrapper.error("list-range错误:[list-range:index,count]count必须大于0");
+                return PipeDataWrapper.error(errorPrefix() + "[list-range:index,count]count必须大于0");
             }
 
             int toIndex = countInt + fromIndex;
@@ -86,7 +86,12 @@ public class ListRangeFilter extends BasePipeFilter<Object, Object> {
             return PipeDataWrapper.success(collection.subList(fromIndex, toIndex));
         } catch (NumberFormatException e) {
             log.warn(e.getMessage(), e);
-            return PipeDataWrapper.error("list-range错误:[list-range:index,count]index或count转换错误");
+            return PipeDataWrapper.error(errorPrefix() + "[list-range:index,count]index或count转换错误");
         }
+    }
+
+    @Override
+    protected String filterName() {
+        return "list-range";
     }
 }

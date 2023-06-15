@@ -34,7 +34,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
         PIPE_FILTER_MAP.put("contains", ContainsFilter::new);
         PIPE_FILTER_MAP.put("prior-contains", PriorContainsFilter::new);
         PIPE_FILTER_MAP.put("list-index", ListIndexFilter::new);
-        PIPE_FILTER_MAP.put("list-out", ListOutFilter::new);
+        PIPE_FILTER_MAP.put("list-echo", ListEchoFilter::new);
         PIPE_FILTER_MAP.put("list-range", ListRangeFilter::new);
     }
 
@@ -99,6 +99,8 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
             if (Objects.nonNull(pipeFilter)) {
                 pipeFilterList.add(pipeFilter);
             }
+            pipeFilter.setCell(rowIndex, columnIndex);
+
             if (expressArray.length > 1 && StringUtils.isNotBlank(expressArray[1])) {
                 String[] paramArray = PipeFilterUtils.getPipeFilterParams(PipeFilterUtils.trim(expressArray[1]));
                 pipeFilter.addParams(paramArray);
@@ -114,5 +116,10 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
             currFilter = currFilter.andThen(pipeFilterList.get(i));
         }
         return currFilter.apply(value);
+    }
+
+    @Override
+    protected String filterName() {
+        return "factory";
     }
 }

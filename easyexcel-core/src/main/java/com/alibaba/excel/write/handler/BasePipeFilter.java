@@ -17,6 +17,23 @@ public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
 
     private final List<String> filterParams = new ArrayList<>();
 
+    protected int rowIndex;
+    protected int columnIndex;
+
+    /**
+     * filter名称
+     *
+     * @return 名称
+     */
+    protected abstract String filterName();
+
+    /**
+     * @return 错误信息前缀
+     */
+    protected String errorPrefix() {
+        return String.format("第[%s]列,[%s]指令错误:", columnIndex + 1, filterName());
+    }
+
     /**
      * filter 参数
      *
@@ -34,6 +51,19 @@ public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
      */
     public BasePipeFilter<T, R> addParams(String... params) {
         params().addAll(Arrays.asList(params));
+        return this;
+    }
+
+    /**
+     * 设置单元格
+     *
+     * @param row    行下标
+     * @param column 列下标
+     * @return 过滤器
+     */
+    public BasePipeFilter<T, R> setCell(int row, int column) {
+        this.rowIndex = row;
+        this.columnIndex = column;
         return this;
     }
 

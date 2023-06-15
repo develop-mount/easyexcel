@@ -2,7 +2,6 @@ package com.alibaba.excel;
 
 import java.io.Closeable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -134,10 +133,20 @@ public class ExcelWriter implements Closeable {
      * @param supplier
      * @param fillConfig
      * @param writeSheet
-     * @return
+     * @return this
      */
     public ExcelWriter fill(Supplier<Object> supplier, FillConfig fillConfig, WriteSheet writeSheet) {
         excelBuilder.fill(supplier.get(), fillConfig, writeSheet);
+        return this;
+    }
+
+    /**
+     * 设置自动填充错误的字段
+     * @param errorField 错误字段
+     * @return this
+     */
+    public ExcelWriter autoFillError(String errorField) {
+        excelBuilder.setAutoErrorField(errorField);
         return this;
     }
 

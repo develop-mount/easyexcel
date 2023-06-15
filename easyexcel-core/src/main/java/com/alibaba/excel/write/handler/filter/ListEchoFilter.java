@@ -17,7 +17,12 @@ import java.util.stream.Collectors;
  * @version 1.0.0
  * @since 2023/5/30 16:52
  */
-public class ListOutFilter extends BasePipeFilter<Object, Object> {
+public class ListEchoFilter extends BasePipeFilter<Object, Object> {
+
+    @Override
+    protected String filterName() {
+        return "list-echo";
+    }
 
     private enum Delimiter {
         /**
@@ -62,18 +67,18 @@ public class ListOutFilter extends BasePipeFilter<Object, Object> {
 
         Object value = wrapper.getData();
         if (Objects.isNull(value)) {
-            return PipeDataWrapper.error("list-out错误:传入数据不能为空");
+            return PipeDataWrapper.error(errorPrefix() + "传入数据不能为空");
         }
 
         if (!(value instanceof Collection)) {
-            return PipeDataWrapper.error("list-out错误:传入数据不是集合");
+            return PipeDataWrapper.error(errorPrefix() + "传入数据不是集合");
         }
 
         @SuppressWarnings("unchecked")
         List<Object> collection = (List<Object>) value;
 
         if (PipeFilterUtils.isEmpty(collection)) {
-            return PipeDataWrapper.error("list-out错误:传入集合为空");
+            return PipeDataWrapper.error(errorPrefix() + "传入集合为空");
         }
 
         if (PipeFilterUtils.isEmpty(params())) {
@@ -87,6 +92,6 @@ public class ListOutFilter extends BasePipeFilter<Object, Object> {
             return PipeDataWrapper.success(collection.stream().map(String::valueOf).collect(Collectors.joining(delimiterEnum.delimiter)));
         }
 
-        return PipeDataWrapper.error("list-out错误:指令格式错误，example: list-out:comma, list-out:wrap or list-out:blank");
+        return PipeDataWrapper.error(errorPrefix() + "指令格式错误，example: list-echo:comma, list-echo:wrap or list-echo:blank");
     }
 }
