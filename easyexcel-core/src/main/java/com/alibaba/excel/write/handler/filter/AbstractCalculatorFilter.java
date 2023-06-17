@@ -86,24 +86,18 @@ public abstract class AbstractCalculatorFilter extends BasePipeFilter<Object, Ob
             number2 = 0D;
         }
 
-        double result = 0D;
-        switch (filterName()) {
-            case "add":
-                result = Calculator.add(number1, number2);
-                break;
-            case "sub":
-                result = Calculator.subtract(number1, number2);
-                break;
-            case "mul":
-                result = Calculator.multiply(number1, number2);
-                break;
-            case "div":
-                result = Calculator.divide(number1, number2);
-                break;
-            default:
-                throw new RuntimeException("Calculator指令不支持");
-        }
+        double result = calculator(number1, number2);
 
+        return showDataWrapper(result);
+
+    }
+
+    /**
+     * 最终显示结果
+     * @param result 结果数据
+     * @return 显示样式
+     */
+    private PipeDataWrapper<Object> showDataWrapper(double result) {
         if (params().size() <= 1) {
             return PipeDataWrapper.success(result);
         } else {
@@ -130,5 +124,32 @@ public abstract class AbstractCalculatorFilter extends BasePipeFilter<Object, Ob
                 return PipeDataWrapper.success(result);
             }
         }
+    }
+
+    /**
+     * 计算
+     * @param number1 数字
+     * @param number2 数字
+     * @return 计算结果
+     */
+    private double calculator(double number1, double number2) {
+        double result = 0D;
+        switch (filterName()) {
+            case "add":
+                result = Calculator.add(number1, number2);
+                break;
+            case "sub":
+                result = Calculator.subtract(number1, number2);
+                break;
+            case "mul":
+                result = Calculator.multiply(number1, number2);
+                break;
+            case "div":
+                result = Calculator.divide(number1, number2);
+                break;
+            default:
+                throw new RuntimeException("Calculator指令不支持");
+        }
+        return result;
     }
 }
