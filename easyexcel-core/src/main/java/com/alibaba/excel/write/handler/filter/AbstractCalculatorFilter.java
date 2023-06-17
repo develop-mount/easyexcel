@@ -145,7 +145,7 @@ public abstract class AbstractCalculatorFilter extends BasePipeFilter<Object, Ob
                 result = Calculator.multiply(number1, number2);
                 break;
             case "div":
-                if (number2 == 0D) {
+                if (number2 == 0) {
                     throw new RuntimeException("cal-div指令除数为0不支持");
                 }
                 result = Calculator.divide(number1, number2);
