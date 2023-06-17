@@ -2,22 +2,21 @@ package com.alibaba.excel.write.handler.filter;
 
 /**
  * Description:
- * 优先包含
+ * equals
  *
  * @author linfeng
  * @version 1.0.0
  * @since 2023/5/30 10:37
  */
-public class PriorContainsFilter extends AbstractPriorMatchFilter {
-
+public class EqualsFilter extends AbstractMatchFilter {
 
     @Override
     protected String filterName() {
-        return "prior-contains";
+        return "equals";
     }
 
     @Override
     protected boolean strMatch(String source, String match) {
-        return source.contains(match);
+        return source.equalsIgnoreCase(match);
     }
 }

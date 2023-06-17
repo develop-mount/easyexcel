@@ -7,7 +7,7 @@ package com.alibaba.excel.write.handler.filter;
  * @version 1.0.0
  * @since 2023/5/28 15:52
  */
-public class PriorEndsWithFilter extends BasePriorMatchFilter {
+public class PriorEndsWithFilter extends AbstractPriorMatchFilter {
 
     @Override
     protected String filterName() {

@@ -8,7 +8,7 @@ package com.alibaba.excel.write.handler.filter;
  * @version 1.0.0
  * @since 2023/5/30 10:37
  */
-public class StartsWithFilter extends BaseMatchFilter {
+public class StartsWithFilter extends AbstractMatchFilter {
 
     @Override
     protected String filterName() {

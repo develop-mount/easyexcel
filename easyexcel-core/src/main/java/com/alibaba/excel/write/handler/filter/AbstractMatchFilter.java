@@ -1,15 +1,13 @@
 package com.alibaba.excel.write.handler.filter;
 
+import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
 import com.alibaba.excel.write.handler.PipeDataWrapper;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Description:
@@ -18,7 +16,7 @@ import java.util.Objects;
  * @version 1.0.0
  * @since 2023/6/15 8:51
  */
-public abstract class BaseMatchFilter extends BasePipeFilter<Object, Object> {
+public abstract class AbstractMatchFilter extends BasePipeFilter<Object, Object> {
 
     /**
      * 字符串匹配
@@ -46,17 +44,19 @@ public abstract class BaseMatchFilter extends BasePipeFilter<Object, Object> {
             return PipeDataWrapper.error(errorPrefix() + "传入数据不能为空");
         }
 
-        if (value instanceof String || value instanceof Collection) {
-
-            if (params().size() == 1) {
-
-                return singleParamsHandle(value);
-            } else {
-
-                return moreParamsHandle(value);
-            }
+        Object dataObj;
+        if (value instanceof String || value instanceof Collection || value instanceof Map) {
+            dataObj = value;
         } else {
-            return PipeDataWrapper.error(errorPrefix() + "传入数据不是集合或字符串");
+            dataObj = BeanMapUtils.create(value);
+        }
+
+        if (params().size() == 1) {
+
+            return singleParamsHandle(dataObj);
+        } else {
+
+            return moreParamsHandle(dataObj);
         }
     }
 
@@ -139,7 +139,21 @@ public abstract class BaseMatchFilter extends BasePipeFilter<Object, Object> {
             } else {
                 return PipeDataWrapper.error(errorPrefix() + String.format("没有包含[%s]的数据", center));
             }
+        } else if (value instanceof Map) {
+
+            //noinspection unchecked
+            Map<Object, Object> colMap = (Map<Object, Object>) value;
+            for (Map.Entry<Object, Object> entry : colMap.entrySet()) {
+                if (Objects.isNull(entry.getKey())) {
+                    continue;
+                }
+                if (strMatch(entry.getKey().toString(), center)) {
+                    return PipeDataWrapper.success(entry.getValue());
+                }
+            }
+            return PipeDataWrapper.error(errorPrefix() + String.format("没有包含[%s]的数据", center));
         } else {
+
             return PipeDataWrapper.error(errorPrefix() + "传入数据不是集合或字符串", value);
         }
     }

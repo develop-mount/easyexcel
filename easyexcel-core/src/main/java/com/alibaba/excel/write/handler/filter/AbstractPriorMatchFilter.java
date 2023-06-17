@@ -11,7 +11,7 @@ import java.util.Objects;
  * @version 1.0.0
  * @since 2023/6/15 9:27
  */
-public abstract class BasePriorMatchFilter extends BaseMatchFilter {
+public abstract class AbstractPriorMatchFilter extends AbstractMatchFilter {
 
     /**
      * 多参数处理,优先级

@@ -24,6 +24,8 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
     static {
         // 初始化内置管道过滤器
         PIPE_FILTER_MAP.put("trim", TrimFilter::new);
+        PIPE_FILTER_MAP.put("equals", EqualsFilter::new);
+        PIPE_FILTER_MAP.put("prior-equals", PriorEqualsFilter::new);
         PIPE_FILTER_MAP.put("ends-with", EndsWithFilter::new);
         PIPE_FILTER_MAP.put("prior-ends-with", PriorEndsWithFilter::new);
         PIPE_FILTER_MAP.put("starts-with", StartsWithFilter::new);
@@ -36,6 +38,10 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
         PIPE_FILTER_MAP.put("list-index", ListIndexFilter::new);
         PIPE_FILTER_MAP.put("list-echo", ListEchoFilter::new);
         PIPE_FILTER_MAP.put("list-range", ListRangeFilter::new);
+        PIPE_FILTER_MAP.put("cal-add", AdditionFilter::new);
+        PIPE_FILTER_MAP.put("cal-sub", SubtractionFilter::new);
+        PIPE_FILTER_MAP.put("cal-mul", MultiplicationFilter::new);
+        PIPE_FILTER_MAP.put("cal-div", DivisionFilter::new);
     }
 
     private PipeFilterFactory(WriteContext writeContext) {

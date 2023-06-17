@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * @version 1.0.0
  * @since 2023/5/29 14:48
  */
-public class PriorPatternFilter extends BasePriorMatchFilter {
+public class PriorPatternFilter extends AbstractPriorMatchFilter {
     @Override
     protected String filterName() {
         return "prior-pattern";
