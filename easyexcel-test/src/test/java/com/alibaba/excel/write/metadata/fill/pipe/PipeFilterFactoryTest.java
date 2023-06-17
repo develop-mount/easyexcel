@@ -14,9 +14,9 @@ import org.junit.jupiter.api.Test;
 class PipeFilterFactoryTest {
 
     @Test
-    void apply() {
+    void testSubstr() {
         PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter(null);
-        pipeFilterFactory.addParams(" test |  | trim : test1,test2 | ");
-        System.out.println(pipeFilterFactory.apply(PipeDataWrapper.success(" data ")));
+        pipeFilterFactory.addParams("test | substring : 0,10 ");
+        System.out.println(pipeFilterFactory.apply(PipeDataWrapper.success("这个示例程序创建了两个 double 类型的变量 a 和 b，分别赋值为 10 和 5，然后调用 Calculator 类中的四个方法，输出运算结果。其中，divide 方法在除数为0时会抛出异常，这里使用了 try-catch 语句捕获异常，并输出错误信息。")));
     }
 }
