@@ -1,26 +1,22 @@
 package com.alibaba.excel.write.handler.filter;
 
 import com.alibaba.excel.util.PipeFilterUtils;
+import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.PipeDataWrapper;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Description:
- * list-out
  *
  * @author linfeng
  * @version 1.0.0
- * @since 2023/5/30 16:52
+ * @since 2023/6/18 9:43
  */
-public class ListEchoFilter extends AbstractEchoFilter {
-
+public class EchoFilter extends AbstractEchoFilter {
     @Override
     protected String filterName() {
-        return "list-echo";
+        return "echo";
     }
 
     @Override
@@ -36,29 +32,26 @@ public class ListEchoFilter extends AbstractEchoFilter {
             return PipeDataWrapper.success("");
         }
 
-        if (!(value instanceof Collection)) {
-            return PipeDataWrapper.error(errorPrefix() + "传入数据不是集合");
+        if (!(value instanceof String)) {
+            return PipeDataWrapper.error(errorPrefix() + "传入数据不是字符串");
         }
 
-        @SuppressWarnings("unchecked")
-        List<Object> collection = (List<Object>) value;
-
-        if (PipeFilterUtils.isEmpty(collection)) {
+        String val = (String) value;
+        if (StringUtils.isBlank(val)) {
             return PipeDataWrapper.success("");
         }
 
         if (PipeFilterUtils.isEmpty(params())) {
-            return PipeDataWrapper.success(collection.stream().map(String::valueOf).collect(Collectors.joining(Delimiter.WRAP.getDelimiter())));
+            return PipeDataWrapper.success("");
         }
 
         String delimiter = params().get(0);
 
         Delimiter delimiterEnum = Delimiter.ofValue(delimiter);
         if (Objects.nonNull(delimiterEnum)) {
-            return PipeDataWrapper.success(collection.stream().map(String::valueOf).collect(Collectors.joining(delimiterEnum.getDelimiter())));
+            return PipeDataWrapper.success(val + delimiterEnum.getDelimiter());
         }
 
-        return PipeDataWrapper.success(collection.stream().map(String::valueOf).collect(Collectors.joining(delimiter)));
-
+        return PipeDataWrapper.success(val + delimiter);
     }
 }
