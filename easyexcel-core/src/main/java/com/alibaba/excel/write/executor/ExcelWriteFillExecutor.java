@@ -396,7 +396,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     private void fillError2DataMap(@SuppressWarnings("rawtypes") Map dataMap, String msg) {
         if (dataMap.containsKey(getFillErrorField())) {
             Object errorData = dataMap.get(getFillErrorField());
-            if (Objects.nonNull(errorData)) {
+            if (Objects.nonNull(errorData) && StringUtils.isNotBlank((String) errorData)) {
 
                 //noinspection unchecked
                 dataMap.put(getFillErrorField(), errorData + "," + msg);

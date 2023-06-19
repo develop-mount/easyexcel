@@ -114,4 +114,30 @@ class PipeFilterFactoryTest {
         val apply = pipeFilterFactory.apply(PipeDataWrapper.success("100"));
         Assert.isTrue(apply.success() && apply.getData().toString().equals("200.99"), "失败");
     }
+
+    @Test
+    void testEcho() {
+//        PhotoStore.attach | prior-ends-with:m100-8.jpg | echo:wrap
+        PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter(null);
+        pipeFilterFactory.addParams("ebayManno.price | prior-ends-with:m100-1.4.jpg | echo:wrap");
+        val apply = pipeFilterFactory.apply(PipeDataWrapper.success(Arrays.asList("http://www.baidu.com/images/m100-1.1.jpg"
+            , "http://www.baidu.com/images/m100-1.2.jpg"
+            , "http://www.baidu.com/images/m100-1.3.jpg"
+            , "http://www.baidu.com/images/m100-1.4.jpg"
+            , "http://www.baidu.com/images/m100-1.5.jpg"
+            , "http://www.baidu.com/images/K100-1.2.jpg")));
+        Assert.isTrue(apply.success() && apply.getData().toString().endsWith("\n"), "失败");
+    }
+
+    @Test
+    void testEchoNone() {
+        PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter(null);
+        pipeFilterFactory.addParams("ebayManno.price | prior-ends-with:m100-1.4.jpg | echo:wrap");
+        val apply = pipeFilterFactory.apply(PipeDataWrapper.success(Arrays.asList("http://www.baidu.com/images/m100-1.1.jpg"
+            , "http://www.baidu.com/images/m100-1.2.jpg"
+            , "http://www.baidu.com/images/m100-1.3.jpg"
+            , "http://www.baidu.com/images/m100-1.5.jpg"
+            , "http://www.baidu.com/images/K100-1.2.jpg")));
+        Assert.isTrue(apply.success() && apply.getData().toString().endsWith("\n"), "失败");
+    }
 }
