@@ -44,6 +44,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
         PIPE_FILTER_MAP.put("cal-mul", MultiplicationFilter::new);
         PIPE_FILTER_MAP.put("cal-div", DivisionFilter::new);
         PIPE_FILTER_MAP.put("substring", SubstringFilter::new);
+        PIPE_FILTER_MAP.put("replace", ReplaceFilter::new);
     }
 
     private PipeFilterFactory(WriteContext writeContext) {

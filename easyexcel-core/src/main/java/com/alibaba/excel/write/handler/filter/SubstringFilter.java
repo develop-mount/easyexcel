@@ -38,7 +38,7 @@ public class SubstringFilter extends BasePipeFilter<Object, Object> {
             return PipeDataWrapper.error(errorPrefix() + "传入数据不能为空");
         }
 
-        if (PipeFilterUtils.isEmpty(params()) || params().size() > PARAMS_NUM) {
+        if (PipeFilterUtils.isEmpty(params()) || params().size() != PARAMS_NUM) {
             return PipeDataWrapper.error(errorPrefix() + "[substring:beginIndex,endIndex]传入参数下标为空或是超过两个");
         }
 
@@ -57,8 +57,16 @@ public class SubstringFilter extends BasePipeFilter<Object, Object> {
         }
 
         try {
+            int length = ((String) value).length();
             int beginIndex = Integer.parseInt(begin);
             int endIndex = Integer.parseInt(end);
+            if (endIndex > length) {
+                endIndex = length;
+            }
+            int subLen = endIndex - beginIndex;
+            if (subLen < 0) {
+                return PipeDataWrapper.error(errorPrefix() + "下标错误,beginIndex==endIndex");
+            }
             return PipeDataWrapper.success(((String) value).substring(beginIndex, endIndex));
         } catch (NumberFormatException e) {
             log.warn(e.getMessage(), e);
