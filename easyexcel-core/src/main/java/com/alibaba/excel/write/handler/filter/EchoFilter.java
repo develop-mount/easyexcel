@@ -22,9 +22,12 @@ public class EchoFilter extends AbstractEchoFilter {
     @Override
     public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
 
-        // 验证
-        if (!verify(wrapper)) {
-            return wrapper;
+        if (Objects.isNull(wrapper)) {
+            return PipeDataWrapper.error(errorPrefix() + "输入数据不能为空");
+        }
+
+        if (!wrapper.success()) {
+            return PipeDataWrapper.error(wrapper.getMessage(), "");
         }
 
         Object value = wrapper.getData();
