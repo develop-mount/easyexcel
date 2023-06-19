@@ -70,7 +70,7 @@ public abstract class AbstractCalculatorFilter extends BasePipeFilter<Object, Ob
 
         double number1 = 0D;
         if (value instanceof Number) {
-            number1 = (Double) value;
+            number1 = ((Number) value).doubleValue();
         } else if (value instanceof String) {
             try {
                 number1 = Double.parseDouble((String) value);
@@ -94,6 +94,7 @@ public abstract class AbstractCalculatorFilter extends BasePipeFilter<Object, Ob
 
     /**
      * 最终显示结果
+     *
      * @param result 结果数据
      * @return 显示样式
      */
@@ -107,14 +108,20 @@ public abstract class AbstractCalculatorFilter extends BasePipeFilter<Object, Ob
             }
             String[] params2Array = params2.split(REGEX);
             if (INT.equalsIgnoreCase(params2Array[0])) {
-                return PipeDataWrapper.success(result);
+
+                return PipeDataWrapper.success(BigDecimal.valueOf(result).setScale(0, RoundingMode.HALF_UP).intValue());
             } else if (NUMBER.equalsIgnoreCase(params2Array[0])) {
                 if (params2Array.length > 1) {
                     if (StringUtils.isNumeric(params2Array[1])) {
                         int scale = Integer.parseInt(params2Array[1]);
-                        return PipeDataWrapper.success(BigDecimal.valueOf(result).setScale(scale, RoundingMode.HALF_UP).doubleValue());
+                        BigDecimal bigDecimal = BigDecimal.valueOf(result).setScale(scale, RoundingMode.HALF_UP);
+                        if (scale == 0) {
+                            return PipeDataWrapper.success(bigDecimal.intValue());
+                        } else {
+                            return PipeDataWrapper.success(bigDecimal.doubleValue());
+                        }
                     } else {
-                        log.warn("Calculator指令[add,sub,mul,div]传递的位数参数不是数字");
+                        log.warn("Calculator指令[cal-add,cal-sub,cal-mul,cal-div]传递的位数参数不是数字");
                         return PipeDataWrapper.success(result);
                     }
                 } else {
@@ -128,6 +135,7 @@ public abstract class AbstractCalculatorFilter extends BasePipeFilter<Object, Ob
 
     /**
      * 计算
+     *
      * @param number1 数字
      * @param number2 数字
      * @return 计算结果
@@ -135,16 +143,16 @@ public abstract class AbstractCalculatorFilter extends BasePipeFilter<Object, Ob
     private double calculator(double number1, double number2) {
         double result = 0D;
         switch (filterName()) {
-            case "add":
+            case "cal-add":
                 result = Calculator.add(number1, number2);
                 break;
-            case "sub":
+            case "cal-sub":
                 result = Calculator.subtract(number1, number2);
                 break;
-            case "mul":
+            case "cal-mul":
                 result = Calculator.multiply(number1, number2);
                 break;
-            case "div":
+            case "cal-div":
                 if (number2 == 0) {
                     throw new RuntimeException("cal-div指令除数为0不支持");
                 }
