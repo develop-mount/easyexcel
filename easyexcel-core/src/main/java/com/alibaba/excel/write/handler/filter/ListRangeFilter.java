@@ -29,7 +29,7 @@ public class ListRangeFilter extends BasePipeFilter<Object, Object> {
      * @return
      */
     @Override
-    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
+    public PipeDataWrapper<Object> callApply(PipeDataWrapper<Object> wrapper) {
 
         // 验证
         if (!verify(wrapper)) {

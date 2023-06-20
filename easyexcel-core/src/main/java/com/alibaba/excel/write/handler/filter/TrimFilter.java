@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class TrimFilter extends BasePipeFilter<Object, Object> {
 
     @Override
-    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
+    public PipeDataWrapper<Object> callApply(PipeDataWrapper<Object> wrapper) {
 
         // 验证
         if (!verify(wrapper)) {

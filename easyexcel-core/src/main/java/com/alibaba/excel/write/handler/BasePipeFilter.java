@@ -19,6 +19,7 @@ public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
 
     protected int rowIndex;
     protected int columnIndex;
+    protected boolean lastFilter = false;
 
     /**
      * filter名称
@@ -26,6 +27,30 @@ public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
      * @return 名称
      */
     protected abstract String filterName();
+
+    /**
+     * call apply
+     * @param wrapper
+     * @return
+     */
+    protected abstract PipeDataWrapper<R> callApply(PipeDataWrapper<T> wrapper);
+
+    @Override
+    public PipeDataWrapper<R> apply(PipeDataWrapper<T> wrapper) {
+        PipeDataWrapper<R> dataWrapper = callApply(wrapper);
+        if (isValidity(dataWrapper)) {
+            return dataWrapper;
+        }
+        return PipeDataWrapper.error(errorPrefix() + "输出数据不能是集合或对象");
+    }
+
+    private boolean isValidity(PipeDataWrapper<R> apply) {
+        Object data = apply.getData();
+        if (Objects.nonNull(data)) {
+            return data instanceof String || data instanceof Number;
+        }
+        return false;
+    }
 
     /**
      * @return 错误信息前缀
@@ -66,6 +91,16 @@ public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
         this.columnIndex = column;
         return this;
     }
+
+    public void setLastFilter(boolean lastFilter) {
+        this.lastFilter = lastFilter;
+    }
+
+    @Override
+    public boolean isLast() {
+        return lastFilter;
+    }
+
 
     /**
      * 验证

@@ -67,7 +67,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
     }
 
     @Override
-    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> value) {
+    public PipeDataWrapper<Object> callApply(PipeDataWrapper<Object> value) {
 
         if (PipeFilterUtils.isEmpty(params())) {
             throw new ExcelRuntimeException("管道字符串格式不正确");
@@ -114,6 +114,8 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
                 String[] paramArray = PipeFilterUtils.getPipeFilterParams(PipeFilterUtils.trim(expressArray[1]));
                 pipeFilter.addParams(paramArray);
             }
+
+            pipeFilter.setLastFilter(i == (pipeArray.length - 1));
         }
 
         if (PipeFilterUtils.isEmpty(pipeFilterList)) {
@@ -126,6 +128,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
         }
         return currFilter.apply(value);
     }
+
 
     @Override
     protected String filterName() {
