@@ -20,7 +20,7 @@ public class EchoFilter extends AbstractEchoFilter {
     }
 
     @Override
-    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
+    public PipeDataWrapper<Object> callApply(PipeDataWrapper<Object> wrapper) {
 
         if (Objects.isNull(wrapper)) {
             return PipeDataWrapper.error(errorPrefix() + "输入数据不能为空");
