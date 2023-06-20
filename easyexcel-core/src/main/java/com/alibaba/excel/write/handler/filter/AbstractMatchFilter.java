@@ -5,7 +5,6 @@ import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
 import com.alibaba.excel.write.handler.PipeDataWrapper;
-import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -95,7 +94,7 @@ public abstract class AbstractMatchFilter extends BasePipeFilter<Object, Object>
                 error.add(itemDataWrapper.getMessage());
             }
         }
-        if (CollectionUtils.isEmpty(error)) {
+        if (PipeFilterUtils.isEmpty(error)) {
             return PipeDataWrapper.success(result);
         } else {
             return PipeDataWrapper.error(errorPrefix() + String.join(",", error), result);
