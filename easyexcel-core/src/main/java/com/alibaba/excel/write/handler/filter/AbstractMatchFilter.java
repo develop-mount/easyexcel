@@ -27,7 +27,7 @@ public abstract class AbstractMatchFilter extends BasePipeFilter<Object, Object>
     protected abstract boolean strMatch(String source, String match);
 
     @Override
-    public PipeDataWrapper<Object> callApply(PipeDataWrapper<Object> wrapper) {
+    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
 
         // 验证
         if (!verify(wrapper)) {

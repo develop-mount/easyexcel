@@ -12,12 +12,7 @@ import java.util.function.Function;
  * @since 2023/5/29 10:13
  */
 public interface PipeFilter<T, R> extends Function<PipeDataWrapper<T>, PipeDataWrapper<R>> {
-
-    /**
-     * is last
-     * @return
-     */
-    boolean isLast();
+    
     /**
      * 执行具体方法
      *

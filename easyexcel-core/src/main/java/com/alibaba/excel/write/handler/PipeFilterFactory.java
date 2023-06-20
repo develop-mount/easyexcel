@@ -67,7 +67,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
     }
 
     @Override
-    public PipeDataWrapper<Object> callApply(PipeDataWrapper<Object> value) {
+    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> value) {
 
         if (PipeFilterUtils.isEmpty(params())) {
             throw new ExcelRuntimeException("管道字符串格式不正确");
@@ -115,7 +115,6 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
                 pipeFilter.addParams(paramArray);
             }
 
-            pipeFilter.setLastFilter(i == (pipeArray.length - 1));
         }
 
         if (PipeFilterUtils.isEmpty(pipeFilterList)) {
@@ -126,7 +125,11 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
         for (int i = 1; i < pipeFilterList.size(); i++) {
             currFilter = currFilter.andThen(pipeFilterList.get(i));
         }
-        return currFilter.apply(value);
+        PipeDataWrapper<Object> dataWrapper = currFilter.apply(value);
+        if (isValidity(dataWrapper)) {
+            return dataWrapper;
+        }
+        return PipeDataWrapper.error(String.format("第[%s]列,数据错误:%s", columnIndex + 1, "变量值不能为集合或Map"));
     }
 
 
