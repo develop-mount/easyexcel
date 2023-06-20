@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -83,7 +84,8 @@ public class ListRangeFilter extends BasePipeFilter<Object, Object> {
                 toIndex = size;
             }
 
-            return PipeDataWrapper.success(collection.subList(fromIndex, toIndex));
+            List<String> collect = collection.stream().map(Object::toString).collect(Collectors.toList());
+            return PipeDataWrapper.success(collect.subList(fromIndex, toIndex));
         } catch (NumberFormatException e) {
             log.warn(e.getMessage(), e);
             return PipeDataWrapper.error(errorPrefix() + "[list-range:index,count]index或count转换错误");

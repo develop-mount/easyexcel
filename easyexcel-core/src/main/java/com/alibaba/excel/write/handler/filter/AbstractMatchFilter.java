@@ -147,13 +147,17 @@ public abstract class AbstractMatchFilter extends BasePipeFilter<Object, Object>
                     continue;
                 }
                 if (strMatch(entry.getKey().toString(), center)) {
-                    return PipeDataWrapper.success(entry.getValue());
+                    if (Objects.nonNull(entry.getValue())) {
+                        return PipeDataWrapper.success(entry.getValue().toString());
+                    } else {
+                        return PipeDataWrapper.success("");
+                    }
                 }
             }
             return PipeDataWrapper.error(errorPrefix() + String.format("没有包含[%s]的数据", center));
         } else {
 
-            return PipeDataWrapper.error(errorPrefix() + "传入数据不是集合或字符串", value);
+            return PipeDataWrapper.error(errorPrefix() + "传入数据不是集合或字符串", value.toString());
         }
     }
 

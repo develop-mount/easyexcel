@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -75,8 +76,8 @@ public class ListIndexFilter extends BasePipeFilter<Object, Object> {
             if (ind >= collection.size()) {
                 return PipeDataWrapper.error(errorPrefix() + "传入参数下标为空");
             }
-
-            return PipeDataWrapper.success(collection.get(ind));
+            List<String> collect = collection.stream().map(Object::toString).collect(Collectors.toList());
+            return PipeDataWrapper.success(collect.get(ind));
         } catch (NumberFormatException e) {
 
             log.warn(e.getMessage(), e);
