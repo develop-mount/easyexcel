@@ -15,6 +15,7 @@ import java.util.Objects;
  */
 public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
 
+    private static final String FACTORY = "factory";
     private final List<String> filterParams = new ArrayList<>();
 
     protected int rowIndex;
@@ -38,6 +39,9 @@ public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
     @Override
     public PipeDataWrapper<R> apply(PipeDataWrapper<T> wrapper) {
         PipeDataWrapper<R> dataWrapper = callApply(wrapper);
+        if (FACTORY.equals(filterName())) {
+            return dataWrapper;
+        }
         if (isValidity(dataWrapper)) {
             return dataWrapper;
         }
