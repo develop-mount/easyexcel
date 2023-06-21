@@ -3,8 +3,11 @@ package com.alibaba.excel.write.handler.filter;
 import com.alibaba.excel.metadata.data.FormulaData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.util.PipeFilterUtils;
+import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
 import com.alibaba.excel.write.handler.PipeDataWrapper;
+
+import java.util.Objects;
 
 /**
  * Description:
@@ -17,6 +20,8 @@ import com.alibaba.excel.write.handler.PipeDataWrapper;
 public class FormulaFilter extends BasePipeFilter<Object, Object> {
 
     private static final int PARAMS_NUM = 1;
+    public static final String SPLIT = "#";
+    public static final String REPLACEMENT = ",";
 
     @Override
     protected String filterName() {
@@ -30,14 +35,25 @@ public class FormulaFilter extends BasePipeFilter<Object, Object> {
             return wrapper;
         }
 
-        if (PipeFilterUtils.isEmpty(params()) || params().size() != PARAMS_NUM) {
-            return PipeDataWrapper.error(errorPrefix() + "传入参数为空或是超过1个");
+        String formula;
+        Object data = wrapper.getData();
+        if (Objects.nonNull(data)) {
+            formula = data.toString();
+        } else {
+
+            if (PipeFilterUtils.isEmpty(params()) || params().size() != PARAMS_NUM) {
+                return PipeDataWrapper.error(errorPrefix() + "传入参数为空或是超过1个");
+            }
+
+            formula = params().get(0);
         }
 
-        String formula = params().get(0);
+        if (StringUtils.isBlank(formula)) {
+            return PipeDataWrapper.error(errorPrefix() + "传入数据或参数不能为空");
+        }
 
-        if (formula.contains("#")) {
-            formula = formula.replaceAll("#", ",");
+        if (formula.contains(SPLIT)) {
+            formula = formula.replaceAll(SPLIT, REPLACEMENT);
         }
 
         WriteCellData<Object> writeCellData = new WriteCellData<>();
