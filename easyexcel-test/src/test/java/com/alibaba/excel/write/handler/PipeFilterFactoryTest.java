@@ -152,4 +152,12 @@ class PipeFilterFactoryTest {
             , "http://www.baidu.com/images/K100-1.2.jpg")));
         Assert.isTrue(apply.success(), "失败");
     }
+
+    @Test
+    void testReplace() {
+        PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter(null);
+        pipeFilterFactory.addParams("ebayManno.price | replace:è,e,1 | replace:é,e,1 | replace:ê,e,1 | replace:à,a,1");
+        val apply = pipeFilterFactory.apply(PipeDataWrapper.success("sdès,èu,àê"));
+        Assert.isTrue(apply.success(), "失败");
+    }
 }

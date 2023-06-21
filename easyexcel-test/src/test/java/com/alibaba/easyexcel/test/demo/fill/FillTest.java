@@ -27,6 +27,21 @@ import org.junit.jupiter.api.Test;
 
 public class FillTest {
 
+    @Test
+    void testCustomerRegisterFilter() {
+        // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
+        String templateFileName =
+            TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "register.xlsx";
+
+        // 方案1 根据对象填充
+        String fileName = TestFileUtil.getPath() + "simpleFill" + System.currentTimeMillis() + ".xlsx";
+        // 这里 会填充到第一个sheet， 然后文件流会自动关闭
+        FillData fillData = new FillData();
+        fillData.setName("u'张三è");
+        fillData.setNumber(5.2);
+        EasyExcel.write(fileName).withTemplate(templateFileName).registerPipeFilterHandler("replace-special", ReplaceSpecialCharactersFilter::new).sheet().doFill(fillData);
+    }
+
     /**
      * 最简单的填充
      *
