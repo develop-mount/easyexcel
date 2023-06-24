@@ -85,6 +85,8 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
             throw new ExcelRuntimeException("管道字符串格式不正确");
         }
 
+        String variableName = pipeArray[0];
+
         List<BasePipeFilter<Object, Object>> pipeFilterList = new ArrayList<>();
         for (int i = 1; i < pipeArray.length; i++) {
             if (StringUtils.isBlank(pipeArray[i])) {
@@ -116,6 +118,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
                 pipeFilter.addParams(paramArray);
             }
 
+            pipeFilter.setVariableName(variableName);
         }
 
         if (PipeFilterUtils.isEmpty(pipeFilterList)) {

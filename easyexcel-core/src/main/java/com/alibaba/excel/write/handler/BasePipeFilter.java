@@ -12,9 +12,8 @@ import java.util.*;
  */
 public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
 
-    private static final String FACTORY = "factory";
     private final List<String> filterParams = new ArrayList<>();
-
+    private String variableName;
     protected int rowIndex;
     protected int columnIndex;
 
@@ -37,7 +36,7 @@ public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
      * @return 错误信息前缀
      */
     protected String errorPrefix() {
-        return String.format("第[%s]列,[%s]指令错误:", columnIndex + 1, filterName());
+        return String.format("第[%s]列,[%s]变量的[%s]指令错误:", columnIndex + 1, variableName, filterName());
     }
 
     /**
@@ -73,6 +72,13 @@ public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
         return this;
     }
 
+    /**
+     * 设置变量名称
+     * @param variableName 变量名称
+     */
+    public void setVariableName(String variableName) {
+        this.variableName = variableName;
+    }
 
     /**
      * 验证
