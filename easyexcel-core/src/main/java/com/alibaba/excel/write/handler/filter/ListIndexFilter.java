@@ -73,7 +73,7 @@ public class ListIndexFilter extends BasePipeFilter<Object, Object> {
                 ind -= 1;
             }
             if (ind >= collection.size() - 1) {
-                return PipeDataWrapper.error(errorPrefix() + "传入参数下标超过集合最大长度");
+                return PipeDataWrapper.success("");
             }
             List<String> collect = collection.stream().map(Object::toString).collect(Collectors.toList());
             return PipeDataWrapper.success(collect.get(ind));
