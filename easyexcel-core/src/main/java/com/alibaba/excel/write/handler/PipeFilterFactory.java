@@ -39,6 +39,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
         PIPE_FILTER_MAP.put("list-echo", ListEchoFilter::new);
         PIPE_FILTER_MAP.put("list-range", ListRangeFilter::new);
         PIPE_FILTER_MAP.put("echo", EchoFilter::new);
+        PIPE_FILTER_MAP.put("condition-echo", ConditionEchoFilter::new);
         PIPE_FILTER_MAP.put("cal-add", AdditionFilter::new);
         PIPE_FILTER_MAP.put("cal-sub", SubtractionFilter::new);
         PIPE_FILTER_MAP.put("cal-mul", MultiplicationFilter::new);
