@@ -110,27 +110,6 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         return StringUtils.isBlank(fillErrorField) ? DEFAULT_ERROR_FIELD : fillErrorField;
     }
 
-    /**
-     * 获取excel中cell fill 错误消息
-     *
-     * @return 错误map
-     */
-    public Map<UniqueDataFlagKey, List<AnalysisCell>> getTemplateAllAnalysisCell() {
-        Map<UniqueDataFlagKey, List<AnalysisCell>> allAnalysisCellMap = MapUtils.newHashMap();
-        if (!org.springframework.util.CollectionUtils.isEmpty(templateAnalysisCache)) {
-            allAnalysisCellMap.putAll(templateAnalysisCache);
-        }
-        for (Map.Entry<UniqueDataFlagKey, List<AnalysisCell>> entry : templateCollectionAnalysisCache.entrySet()) {
-            List<AnalysisCell> analysisCells = allAnalysisCellMap.get(entry.getKey());
-            if (Objects.isNull(analysisCells)) {
-                analysisCells = new ArrayList<>();
-            }
-            analysisCells.addAll(entry.getValue());
-            allAnalysisCellMap.put(entry.getKey(), analysisCells);
-        }
-        return allAnalysisCellMap;
-    }
-
     public void fill(Object data, FillConfig fillConfig) {
         if (data == null) {
             data = new HashMap<String, Object>(16);

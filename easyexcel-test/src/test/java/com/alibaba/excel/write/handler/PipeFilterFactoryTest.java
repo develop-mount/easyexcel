@@ -160,4 +160,12 @@ class PipeFilterFactoryTest {
         val apply = pipeFilterFactory.apply(PipeDataWrapper.success("sdès,èu,àê"));
         Assert.isTrue(apply.success(), "失败");
     }
+
+    @Test
+    void testConfition() {
+        PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter(null);
+        pipeFilterFactory.addParams("ebayManno.price | condition-echo:是,Yes,No");
+        val apply = pipeFilterFactory.apply(PipeDataWrapper.success("是"));
+        Assert.isTrue(apply.success(), "失败");
+    }
 }

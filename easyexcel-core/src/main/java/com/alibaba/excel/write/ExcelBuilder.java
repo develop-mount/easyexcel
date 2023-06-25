@@ -51,12 +51,6 @@ public interface ExcelBuilder {
     void fill(Object data, FillConfig fillConfig, WriteSheet writeSheet);
 
     /**
-     * 得到fill 错误消息
-     * @return 错误消息
-     */
-    Map<ExcelWriteFillExecutor.UniqueDataFlagKey, List<AnalysisCell>> fillMessage();
-
-    /**
      * Creates new cell range. Indexes are zero-based.
      *
      * @param firstRow

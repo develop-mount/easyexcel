@@ -151,15 +151,6 @@ public class ExcelWriter implements Closeable {
     }
 
     /**
-     * 得到fill 错误消息
-     *
-     * @return 错误消息
-     */
-    public Map<ExcelWriteFillExecutor.UniqueDataFlagKey, List<AnalysisCell>> fillMessage() {
-        return excelBuilder.fillMessage();
-    }
-
-    /**
      * Close IO
      */
     public void finish() {
