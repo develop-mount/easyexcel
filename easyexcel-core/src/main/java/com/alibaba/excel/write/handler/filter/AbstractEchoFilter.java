@@ -21,6 +21,10 @@ public abstract class AbstractEchoFilter extends BasePipeFilter<Object, Object> 
          */
         WRAP("wrap", "\n"),
         /**
+         * HTML 换行
+         */
+        BR("br", "<br>"),
+        /**
          * 逗号
          */
         COMMA("comma", ",");
