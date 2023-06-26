@@ -108,9 +108,6 @@ public class FillTest {
         try (ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet().build();
             ExcelWriter writer =  excelWriter.fill(data(), writeSheet);
-            // 错误信息
-            Map<ExcelWriteFillExecutor.UniqueDataFlagKey, List<AnalysisCell>> uniqueDataFlagKeyListMap = writer.fillMessage();
-
             excelWriter.fill(data(), writeSheet);
         }
     }
