@@ -370,6 +370,7 @@ public class FillTest {
         List<DemoData> list = ListUtils.newArrayList();
         for (int i = 0; i < 10; i++) {
             DemoData data = new DemoData();
+            data.setError("error全局错误");
             PrefixData prefixData = new PrefixData();
             FillData fillData = new FillData();
             prefixData.setFillData(fillData);

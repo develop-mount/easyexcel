@@ -16,4 +16,5 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class DemoData {
     private PrefixData demo;
+    private String error;
 }

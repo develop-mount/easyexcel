@@ -225,6 +225,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         RowWriteHandlerContext rowWriteHandlerContext = WriteHandlerUtils.createRowWriteHandlerContext(writeContext,
             null, relativeRowIndex, Boolean.FALSE);
 
+        Object globalMsg = dataMap.get(getFillErrorField());
+
         for (AnalysisCell analysisCell : analysisCellList) {
             CellWriteHandlerContext cellWriteHandlerContext = WriteHandlerUtils.createCellWriteHandlerContext(
                 writeContext, null, analysisCell.getRowIndex(), null, analysisCell.getColumnIndex(),
@@ -245,12 +247,12 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                             value = wrapper.getData();
                         } else {
                             value = wrapper.getData();
-                            fillError2DataMap(dataMap, wrapper.getMessage());
+                            fillError2DataMap(dataMap, wrapper.getMessage(), globalMsg);
                             analysisCell.setMessage(wrapper.getMessage());
                         }
                     } catch (Exception e) {
                         value = "";
-                        fillError2DataMap(dataMap, e.getMessage());
+                        fillError2DataMap(dataMap, e.getMessage(), globalMsg);
                         analysisCell.setMessage(e.getMessage());
                     }
                 } else {
@@ -302,12 +304,12 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                                 value = wrapper.getData();
                             } else {
                                 value = wrapper.getData();
-                                fillError2DataMap(dataMap, wrapper.getMessage());
+                                fillError2DataMap(dataMap, wrapper.getMessage(), globalMsg);
                                 analysisCell.setMessage(wrapper.getMessage());
                             }
                         } catch (Exception e) {
                             value = "";
-                            fillError2DataMap(dataMap, e.getMessage());
+                            fillError2DataMap(dataMap, e.getMessage(), globalMsg);
                             analysisCell.setMessage(e.getMessage());
                         }
                     } else {
@@ -372,16 +374,18 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
      * @param dataMap 待填充excel的数据
      * @param msg     消息
      */
-    private void fillError2DataMap(@SuppressWarnings("rawtypes") Map dataMap, String msg) {
-        if (dataMap.containsKey(getFillErrorField())) {
-            Object errorData = dataMap.get(getFillErrorField());
-            if (Objects.nonNull(errorData) && StringUtils.isNotBlank((String) errorData)) {
+    private void fillError2DataMap(@SuppressWarnings("rawtypes") Map dataMap, String msg, Object globalMsg) {
+        if (Objects.isNull(globalMsg) || StringUtils.isBlank(globalMsg.toString())) {
+            if (dataMap.containsKey(getFillErrorField())) {
+                Object errorData = dataMap.get(getFillErrorField());
+                if (Objects.nonNull(errorData) && StringUtils.isNotBlank((String) errorData)) {
 
-                //noinspection unchecked
-                dataMap.put(getFillErrorField(), errorData);
-            } else {
-                //noinspection unchecked
-                dataMap.put(getFillErrorField(), msg);
+                    //noinspection unchecked
+                    dataMap.put(getFillErrorField(), errorData + ";" + msg);
+                } else {
+                    //noinspection unchecked
+                    dataMap.put(getFillErrorField(), msg);
+                }
             }
         }
     }
