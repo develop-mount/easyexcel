@@ -16,6 +16,7 @@ public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
     private String variableName;
     protected int rowIndex;
     protected int columnIndex;
+    protected String columnName;
 
     /**
      * filter名称
@@ -36,7 +37,7 @@ public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
      * @return 错误信息前缀
      */
     protected String errorPrefix() {
-        return String.format("第[%s]列,[%s]变量的[%s]指令错误:", columnIndex + 1, variableName, filterName());
+        return String.format("[%s]列,[%s]变量的[%s]指令错误:", columnName, variableName, filterName());
     }
 
     /**
@@ -69,7 +70,23 @@ public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
     public BasePipeFilter<T, R> setCell(int row, int column) {
         this.rowIndex = row;
         this.columnIndex = column;
+        this.columnName = convertColumnToName(column);
         return this;
+    }
+
+    /**
+     * 转换列名
+     * @param column 列号
+     * @return 列名
+     */
+    private String convertColumnToName(int column){
+        StringBuilder colIndex = new StringBuilder();
+        while(column>=0){
+            int i= column%26;
+            colIndex.append((char)(i+65));
+            column = column/26 -1;
+        }
+        return colIndex.reverse().toString();
     }
 
     /**
@@ -77,7 +94,7 @@ public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
      * @param variableName 变量名称
      */
     public void setVariableName(String variableName) {
-        this.variableName = variableName;
+        this.variableName = variableName.trim();
     }
 
     /**
