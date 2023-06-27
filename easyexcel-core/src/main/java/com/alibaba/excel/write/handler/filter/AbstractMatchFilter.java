@@ -5,6 +5,7 @@ import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
 import com.alibaba.excel.write.handler.PipeDataWrapper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
@@ -15,6 +16,7 @@ import java.util.*;
  * @version 1.0.0
  * @since 2023/6/15 8:51
  */
+@Slf4j
 public abstract class AbstractMatchFilter extends BasePipeFilter<Object, Object> {
 
     /**
@@ -24,7 +26,7 @@ public abstract class AbstractMatchFilter extends BasePipeFilter<Object, Object>
      * @param match  匹配字符串
      * @return 是否匹配
      */
-    protected abstract boolean strMatch(String source, String match);
+    protected abstract boolean matchProcess(String source, String match);
 
     @Override
     public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
@@ -111,7 +113,7 @@ public abstract class AbstractMatchFilter extends BasePipeFilter<Object, Object>
     protected PipeDataWrapper<Object> instructHandle(Object value, String center) {
 
         if (value instanceof Collection) {
-            String result = null;
+            Object result = null;
             //noinspection unchecked
             Collection<Object> collection = (Collection<Object>) value;
             for (Object col : collection) {
@@ -120,45 +122,71 @@ public abstract class AbstractMatchFilter extends BasePipeFilter<Object, Object>
                 }
                 if (col instanceof String) {
                     String cel = (String) col;
-                    if (strMatch(cel, center)) {
+                    if (matchProcess(cel, center)) {
                         result = cel;
                         break;
                     }
+                } else if (col instanceof Collection) {
+                    log.warn(errorPrefix() + "传入数据不支持集合套集合的情况");
+                    break;
+                } else {
+                    result = getObjectOfMap(col, center);
                 }
             }
-            if (StringUtils.isBlank(result)) {
+            if (Objects.isNull(result)) {
                 return PipeDataWrapper.error(errorPrefix() + String.format("没有包含[%s]的数据", center));
             } else {
                 return PipeDataWrapper.success(result);
             }
         } else if (value instanceof String) {
             String col = (String) value;
-            if (strMatch(col, center)) {
+            if (matchProcess(col, center)) {
                 return PipeDataWrapper.success(col);
             } else {
                 return PipeDataWrapper.error(errorPrefix() + String.format("没有包含[%s]的数据", center));
             }
-        } else if (value instanceof Map) {
-
-            //noinspection unchecked
-            Map<Object, Object> colMap = (Map<Object, Object>) value;
-            for (Map.Entry<Object, Object> entry : colMap.entrySet()) {
-                if (Objects.isNull(entry.getKey())) {
-                    continue;
-                }
-                if (strMatch(entry.getKey().toString(), center)) {
-                    if (Objects.nonNull(entry.getValue())) {
-                        return PipeDataWrapper.success(entry.getValue().toString());
-                    } else {
-                        return PipeDataWrapper.success("");
-                    }
-                }
-            }
-            return PipeDataWrapper.error(errorPrefix() + String.format("没有包含[%s]的数据", center));
         } else {
-
-            return PipeDataWrapper.error(errorPrefix() + "传入数据不是集合或字符串", value.toString());
+            Object result = getObjectOfMap(value, center);
+            if (Objects.isNull(result)) {
+                return PipeDataWrapper.error(errorPrefix() + String.format("没有包含[%s]的数据", center));
+            } else {
+                return PipeDataWrapper.success(result);
+            }
         }
+    }
+
+    /**
+     * get object from map or object
+     *
+     * @param value
+     * @param center
+     * @return
+     */
+    private Object getObjectOfMap(Object value, String center) {
+        Map<Object, Object> colMap;
+        if (value instanceof Map) {
+            //noinspection unchecked
+            colMap = (Map<Object, Object>) value;
+        } else {
+            //noinspection unchecked
+            colMap = BeanMapUtils.create(value);
+        }
+
+        Object result = null;
+        for (Map.Entry<Object, Object> entry : colMap.entrySet()) {
+            if (Objects.isNull(entry.getKey())) {
+                continue;
+            }
+            if (matchProcess(entry.getKey().toString(), center)) {
+                if (Objects.nonNull(entry.getValue())) {
+                    result = entry.getValue();
+                } else {
+                    result = "";
+                }
+                break;
+            }
+        }
+        return result;
     }
 
 

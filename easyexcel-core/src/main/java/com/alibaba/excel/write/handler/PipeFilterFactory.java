@@ -47,6 +47,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
         PIPE_FILTER_MAP.put("substring", SubstringFilter::new);
         PIPE_FILTER_MAP.put("replace", ReplaceFilter::new);
         PIPE_FILTER_MAP.put("formula", FormulaFilter::new);
+        PIPE_FILTER_MAP.put("max-size", MaxSizeFilter::new);
     }
 
     private PipeFilterFactory(WriteContext writeContext) {

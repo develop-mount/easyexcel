@@ -16,7 +16,7 @@ public class PriorStartsWithFilter extends AbstractPriorMatchFilter {
     }
 
     @Override
-    protected boolean strMatch(String source, String match) {
+    protected boolean matchProcess(String source, String match) {
         return source.startsWith(match);
     }
 }

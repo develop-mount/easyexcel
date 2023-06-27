@@ -168,4 +168,19 @@ class PipeFilterFactoryTest {
         val apply = pipeFilterFactory.apply(PipeDataWrapper.success("是"));
         Assert.isTrue(apply.success(), "失败");
     }
+
+    @Test
+    void testProEndsWithMap() {
+        PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter(null);
+        pipeFilterFactory.addParams("test | prior-ends-with : m100-1.1.jpg | prior-equals:url");
+
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("url", "http://www.baidu.com/images/m100-1.1.jpg");
+        dataMap.put("size", 123123);
+        Map<String, Object> dMap = new HashMap<>();
+        dMap.put("http://www.baidu.com/images/m100-1.1.jpg", dataMap);
+
+        val apply = pipeFilterFactory.apply(PipeDataWrapper.success(Arrays.asList(dMap)));
+        Assert.isTrue(apply.success(), "失败");
+    }
 }

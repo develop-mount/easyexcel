@@ -18,7 +18,7 @@ public class PatternFilter extends AbstractMatchFilter {
     }
 
     @Override
-    protected boolean strMatch(String source, String match) {
+    protected boolean matchProcess(String source, String match) {
         return Pattern.matches(match, source);
     }
 }
