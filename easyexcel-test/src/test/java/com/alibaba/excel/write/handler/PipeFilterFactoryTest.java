@@ -172,7 +172,7 @@ class PipeFilterFactoryTest {
     @Test
     void testProEndsWithMap() {
         PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter(null);
-        pipeFilterFactory.addParams("test | prior-ends-with : m100-1.1.jpg | prior-equals:url");
+        pipeFilterFactory.addParams("test | ends-with : m100-1.1.jpg | prior-equals:size | max-size:10000");
 
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("url", "http://www.baidu.com/images/m100-1.1.jpg");
