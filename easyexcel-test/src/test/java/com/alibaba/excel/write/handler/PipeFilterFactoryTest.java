@@ -183,4 +183,12 @@ class PipeFilterFactoryTest {
         val apply = pipeFilterFactory.apply(PipeDataWrapper.success(Arrays.asList(dMap)));
         Assert.isTrue(apply.success(), "失败");
     }
+
+    @Test
+    void testMust() {
+        PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter(null);
+        pipeFilterFactory.addParams("ebayManno.price | must");
+        val apply = pipeFilterFactory.apply(PipeDataWrapper.success(""));
+        Assert.isTrue(apply.success(), "失败");
+    }
 }

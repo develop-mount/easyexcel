@@ -1,8 +1,11 @@
 package com.alibaba.excel.write.handler.filter;
 
+import com.alibaba.excel.util.PipeFilterUtils;
+import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
 import com.alibaba.excel.write.handler.PipeDataWrapper;
 
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -26,6 +29,20 @@ public class MustFilter extends BasePipeFilter<Object, Object> {
         Object value = wrapper.getData();
         if (Objects.isNull(value)) {
             return PipeDataWrapper.error(errorPrefix() + "传入数据不能为空");
+        }
+
+        if (value instanceof Collection) {
+            @SuppressWarnings("rawtypes")
+            Collection collection = (Collection) value;
+            if (PipeFilterUtils.isEmpty(collection)) {
+                return PipeDataWrapper.error(errorPrefix() + "传入数据不能为空");
+            }
+        }
+        if (value instanceof String) {
+            String val = (String) value;
+            if (StringUtils.isBlank(val)) {
+                return PipeDataWrapper.error(errorPrefix() + "传入数据不能为空");
+            }
         }
 
         return PipeDataWrapper.success(value);
