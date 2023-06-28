@@ -70,6 +70,27 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
         return new PipeFilterFactory(writeContext);
     }
 
+    /**
+     * 创建管道过滤器
+     *
+     * @return 管道过滤器
+     */
+    public static PipeFilterFactory createPipeFilter() {
+        return new PipeFilterFactory(null);
+    }
+
+    /**
+     * 注册管道过滤器
+     *
+     * @param name       filter name
+     * @param pipeFilter pipe filer
+     * @return factory
+     */
+    public PipeFilterFactory registerPipeFilter(String name, Supplier<BasePipeFilter<Object, Object>> pipeFilter) {
+        PIPE_FILTER_MAP.put(name, pipeFilter);
+        return this;
+    }
+
     @Override
     public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> value) {
 
