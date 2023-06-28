@@ -110,9 +110,9 @@ class PipeFilterFactoryTest {
     void testNumber() {
 //        ebayManno.price | cal-mul:1.4,int | cal-add:0.99,number_2
         PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter(null);
-        pipeFilterFactory.addParams("ebayManno.price | cal-mul:2,int | cal-add:0.99,number_2");
-        val apply = pipeFilterFactory.apply(PipeDataWrapper.success("100"));
-        Assert.isTrue(apply.success() && apply.getData().toString().equals("200.99"), "失败");
+        pipeFilterFactory.addParams("ebayManno.price | cal-mul:1.4,int | cal-add:0.99,number_2");
+        val apply = pipeFilterFactory.apply(PipeDataWrapper.success("34"));
+        Assert.isTrue(apply.success() && apply.getData().toString().equals("47.99"), "失败");
     }
 
     @Test
