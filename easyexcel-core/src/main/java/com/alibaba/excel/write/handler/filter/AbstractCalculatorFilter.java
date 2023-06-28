@@ -109,7 +109,7 @@ public abstract class AbstractCalculatorFilter extends BasePipeFilter<Object, Ob
             String[] params2Array = params2.split(REGEX);
             if (INT.equalsIgnoreCase(params2Array[0])) {
 
-                return PipeDataWrapper.success(BigDecimal.valueOf(result).setScale(0, RoundingMode.HALF_UP).intValue());
+                return PipeDataWrapper.success(BigDecimal.valueOf(result).setScale(0, RoundingMode.HALF_DOWN).intValue());
             } else if (NUMBER.equalsIgnoreCase(params2Array[0])) {
                 if (params2Array.length > 1) {
                     if (StringUtils.isNumeric(params2Array[1])) {
