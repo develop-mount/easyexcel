@@ -201,6 +201,22 @@ class PipeFilterFactoryTest {
         Assert.isTrue(apply.success(), "失败");
     }
 
+    @Test
+    void testList() {
+        PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter(null);
+        pipeFilterFactory.addParams("PublishCenter.Bullet Point.bulletPoints | list-index:6");
+        val apply = pipeFilterFactory.apply(PipeDataWrapper.success(JSON.parseArray(data1)));
+        Assert.isTrue(apply.success(), "失败");
+    }
+
+    private static String data1 = "[\n" +
+        "    \"Heavy-Duty Frame and Bags: Simplify your laundry routine with the remarkable laundry sorter cart. Its heavy-duty 600D Oxford cloth bags are waterproof and easy to clean, while the thickened metal frame and 6 horizontal bars provide enhanced stability.\",\n" +
+        "    \"Ample Storage Capacity: Each heavy-duty bag holds up to 25 lbs of clothes, providing ample space for clothes, towels, bedding, and other laundry items, keeping them organized and easily accessible. The basket serves as a practical storage solution when not used for carrying laundry.\",\n" +
+        "    \"3 Sections for Easy Sorting: This laundry basket is divided into 3 sections of different colors, allowing you to easily sort your laundry by whites, darks, and grey, making it convenient to keep your clothes organized.\",\n" +
+        "    \"Easy to Move Around: Equipped with 4 smooth-rolling casters, our laundry hamper with wheels ensures effortless movement, making it easy to pick up laundry from every room. Two locking casters provide stability when parked, and the foamed handle on the laundry cart offers a comfortable grip, ensuring ease of maneuverability.\",\n" +
+        "    \"Ultra-practical Laundry Cart: The VEVOR laundry sorter cart offers the perfect solution for all your laundry needs, ensuring everything is organized and easily accessible. Whether it's for your laundry room, bedroom, entryway, living room, small apartment, or dorm, this cart is an excellent choice to streamline your laundry routine.\"\n" +
+        "]";
+
     private static String data = "[\n" +
         "    {\n" +
         "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-f1.jpg\": {\n" +

@@ -72,8 +72,8 @@ public class ListIndexFilter extends BasePipeFilter<Object, Object> {
             if (ind >= 1) {
                 ind -= 1;
             }
-            if (ind >= collection.size() - 1) {
-                return PipeDataWrapper.success("");
+            if (ind > collection.size() - 1) {
+                return PipeDataWrapper.error(errorPrefix() + "下标超出数据最大范围");
             }
             List<String> collect = collection.stream().map(Object::toString).collect(Collectors.toList());
             return PipeDataWrapper.success(collect.get(ind));
