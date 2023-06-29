@@ -159,7 +159,9 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
         if (isValidity(dataWrapper)) {
             return dataWrapper;
         }
-        return PipeDataWrapper.error(String.format("第[%s]列,数据错误:变量值类型错误，不应该是%s", columnName, dataWrapper.getData().getClass().getSimpleName()));
+        String msg = String.format("第[%s]列,数据错误:变量值类型错误，不应该是%s", columnName, dataWrapper.getData().getClass().getSimpleName());
+        log.debug(msg);
+        return PipeDataWrapper.error(msg);
     }
 
 
