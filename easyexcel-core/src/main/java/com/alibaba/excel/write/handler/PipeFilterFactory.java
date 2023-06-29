@@ -156,11 +156,10 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
             currFilter = currFilter.andThen(pipeFilterList.get(i));
         }
         PipeDataWrapper<Object> dataWrapper = currFilter.apply(value);
-        log.info(String.format("第[%s]列,数据类型:%s", columnName, dataWrapper.getData().getClass().getSimpleName()));
         if (isValidity(dataWrapper)) {
             return dataWrapper;
         }
-        return PipeDataWrapper.error(String.format("第[%s]列,数据错误:%s", columnName, "变量值不能为集合或Map"));
+        return PipeDataWrapper.error(String.format("第[%s]列,数据错误:变量值类型错误，不应该是%s", columnName, dataWrapper.getData().getClass().getSimpleName()));
     }
 
 
