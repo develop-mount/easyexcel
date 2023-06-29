@@ -28,7 +28,9 @@ public abstract class BasePipeFilter<T, R> implements PipeFilter<T, R> {
     protected boolean isValidity(PipeDataWrapper<R> apply) {
         Object data = apply.getData();
         if (Objects.nonNull(data)) {
-            return !(data instanceof Collection || data instanceof Map);
+            return !(data instanceof Collection || data instanceof Map
+                || "JSONObject".equals(data.getClass().getSimpleName())
+                || "JSONArray".equals(data.getClass().getSimpleName()));
         }
         return true;
     }

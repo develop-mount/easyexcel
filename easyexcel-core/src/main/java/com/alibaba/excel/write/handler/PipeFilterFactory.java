@@ -5,6 +5,7 @@ import com.alibaba.excel.exception.ExcelRuntimeException;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.write.handler.filter.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.function.Function;
@@ -17,6 +18,7 @@ import java.util.function.Supplier;
  * @version 1.0.0
  * @since 2023/5/27 22:19
  */
+@Slf4j
 public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
 
     private static final Map<String, Supplier<BasePipeFilter<Object, Object>>> PIPE_FILTER_MAP = new HashMap<>();
@@ -154,10 +156,11 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
             currFilter = currFilter.andThen(pipeFilterList.get(i));
         }
         PipeDataWrapper<Object> dataWrapper = currFilter.apply(value);
+        log.info(dataWrapper.getData().getClass().getSimpleName());
         if (isValidity(dataWrapper)) {
             return dataWrapper;
         }
-        return PipeDataWrapper.error(String.format("第[%s]列,数据错误:%s", columnIndex + 1, "变量值不能为集合或Map"));
+        return PipeDataWrapper.error(String.format("第[%s]列,数据错误:%s", columnName, "变量值不能为集合或Map"));
     }
 
 
