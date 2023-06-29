@@ -156,7 +156,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
             currFilter = currFilter.andThen(pipeFilterList.get(i));
         }
         PipeDataWrapper<Object> dataWrapper = currFilter.apply(value);
-        log.info(dataWrapper.getData().getClass().getSimpleName());
+        log.info(String.format("第[%s]列,数据类型:%s", columnName, dataWrapper.getData().getClass().getSimpleName()));
         if (isValidity(dataWrapper)) {
             return dataWrapper;
         }
