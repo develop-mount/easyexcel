@@ -131,6 +131,9 @@ public abstract class AbstractMatchFilter extends BasePipeFilter<Object, Object>
                     break;
                 } else {
                     result = getObjectOfMap(col, center);
+                    if (Objects.nonNull(result)) {
+                        break;
+                    }
                 }
             }
             if (Objects.isNull(result)) {

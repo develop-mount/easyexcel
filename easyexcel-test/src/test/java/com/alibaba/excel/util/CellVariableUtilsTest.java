@@ -29,4 +29,10 @@ class CellVariableUtilsTest {
 
         System.out.println(variable.size());
     }
+
+    @Test
+    void testVa() {
+        CellVariableUtils.prepareData("{.ProductCenter.test}test{.pspd}");
+        CellVariableUtils.prepareData("{.ProductCenter.test}test");
+    }
 }

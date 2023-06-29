@@ -2,6 +2,7 @@ package com.alibaba.excel.write.handler;
 
 import com.alibaba.easyexcel.test.demo.fill.FillData;
 import com.alibaba.excel.util.ListUtils;
+import com.alibaba.fastjson2.JSON;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
@@ -191,4 +192,315 @@ class PipeFilterFactoryTest {
         val apply = pipeFilterFactory.apply(PipeDataWrapper.success(""));
         Assert.isTrue(apply.success(), "失败");
     }
+
+    @Test
+    void testJson() {
+        PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter(null);
+        pipeFilterFactory.addParams("ebayManno.price | prior-ends-with:cover-f1.jpg | prior-equals:fileSize");
+        val apply = pipeFilterFactory.apply(PipeDataWrapper.success(JSON.parseArray(data)));
+        Assert.isTrue(apply.success(), "失败");
+    }
+
+    private static String data = "[\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-f1.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-f1.jpg\",\n" +
+        "            \"fileSize\": \"1.61MB\",\n" +
+        "            \"ruleName\": \"kw-f1\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-f1.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-fb1.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-fb1.jpg\",\n" +
+        "            \"fileSize\": \"372.06KB\",\n" +
+        "            \"ruleName\": \"kw-fb1\",\n" +
+        "            \"fileParameter\": \"1080x1080\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-fb1.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-x1.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-x1.jpg\",\n" +
+        "            \"fileSize\": \"223.90KB\",\n" +
+        "            \"ruleName\": \"kw-x1\",\n" +
+        "            \"fileParameter\": \"750x1000\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-x1.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-f2.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-f2.jpg\",\n" +
+        "            \"fileSize\": \"1.18MB\",\n" +
+        "            \"ruleName\": \"kw-f2\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-f2.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-f3.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-f3.jpg\",\n" +
+        "            \"fileSize\": \"896.78KB\",\n" +
+        "            \"ruleName\": \"kw-f3\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-f3.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-f4.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-f4.jpg\",\n" +
+        "            \"fileSize\": \"1.14MB\",\n" +
+        "            \"ruleName\": \"kw-f4\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-f4.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-f5.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-f5.jpg\",\n" +
+        "            \"fileSize\": \"1004.00KB\",\n" +
+        "            \"ruleName\": \"kw-f5\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-f5.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-f6.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-f6.jpg\",\n" +
+        "            \"fileSize\": \"866.75KB\",\n" +
+        "            \"ruleName\": \"kw-f6\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-f6.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/Chair-Cover-a100-1.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/Chair-Cover-a100-1.jpg\",\n" +
+        "            \"fileSize\": \"126.27KB\",\n" +
+        "            \"ruleName\": \"kw-a100-1\",\n" +
+        "            \"fileParameter\": \"970x300\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/Chair-Cover-a100-1.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-2.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-m100-2.jpg\",\n" +
+        "            \"fileSize\": \"492.56KB\",\n" +
+        "            \"ruleName\": \"kw-m100-2\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-2.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-a100-2.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-a100-2.jpg\",\n" +
+        "            \"fileSize\": \"50.24KB\",\n" +
+        "            \"ruleName\": \"kw-a100-2\",\n" +
+        "            \"fileParameter\": \"300x400\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-a100-2.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-3.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-m100-3.jpg\",\n" +
+        "            \"fileSize\": \"222.59KB\",\n" +
+        "            \"ruleName\": \"kw-m100-3\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-3.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-a100-3.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-a100-3.jpg\",\n" +
+        "            \"fileSize\": \"20.48KB\",\n" +
+        "            \"ruleName\": \"kw-a100-3\",\n" +
+        "            \"fileParameter\": \"350x175\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-a100-3.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-4.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-m100-4.jpg\",\n" +
+        "            \"fileSize\": \"628.98KB\",\n" +
+        "            \"ruleName\": \"kw-m100-4\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-4.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-5.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-m100-5.jpg\",\n" +
+        "            \"fileSize\": \"433.01KB\",\n" +
+        "            \"ruleName\": \"kw-m100-5\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-5.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-6.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-m100-6.jpg\",\n" +
+        "            \"fileSize\": \"548.50KB\",\n" +
+        "            \"ruleName\": \"kw-m100-6\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-6.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-7.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-m100-7.jpg\",\n" +
+        "            \"fileSize\": \"1.09MB\",\n" +
+        "            \"ruleName\": \"kw-m100-7\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-7.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-8.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-m100-8.jpg\",\n" +
+        "            \"fileSize\": \"778.60KB\",\n" +
+        "            \"ruleName\": \"kw-m100-8\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-8.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-9.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-m100-9.jpg\",\n" +
+        "            \"fileSize\": \"653.71KB\",\n" +
+        "            \"ruleName\": \"kw-m100-9\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-9.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-10.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-m100-10.jpg\",\n" +
+        "            \"fileSize\": \"575.17KB\",\n" +
+        "            \"ruleName\": \"kw-m100-10\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-10.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-1.1.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-m100-1.1.jpg\",\n" +
+        "            \"fileSize\": \"1.48MB\",\n" +
+        "            \"ruleName\": \"kw-m100-1.1\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-1.1.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-11.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-m100-11.jpg\",\n" +
+        "            \"fileSize\": \"587.81KB\",\n" +
+        "            \"ruleName\": \"kw-m100-11\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-11.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-1.2.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-m100-1.2.jpg\",\n" +
+        "            \"fileSize\": \"89.29KB\",\n" +
+        "            \"ruleName\": \"kw-m100-1.2\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-1.2.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-12.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-m100-12.jpg\",\n" +
+        "            \"fileSize\": \"623.69KB\",\n" +
+        "            \"ruleName\": \"kw-m100-12\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-m100-12.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/Chair-Cover-m100-1.3.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/Chair-Cover-m100-1.3.jpg\",\n" +
+        "            \"fileSize\": \"238.14KB\",\n" +
+        "            \"ruleName\": \"kw-m100-1.3\",\n" +
+        "            \"fileParameter\": \"1600x1600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/Chair-Cover-m100-1.3.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-a100-1.4.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-a100-1.4.jpg\",\n" +
+        "            \"fileSize\": \"270.80KB\",\n" +
+        "            \"ruleName\": \"kw-a100-1.4\",\n" +
+        "            \"fileParameter\": \"970x600\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-a100-1.4.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-a100-1.6.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-a100-1.6.jpg\",\n" +
+        "            \"fileSize\": \"302.29KB\",\n" +
+        "            \"ruleName\": \"kw-a100-1.6\",\n" +
+        "            \"fileParameter\": \"1200x628\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-a100-1.6.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-a100-1.9.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-a100-1.9.jpg\",\n" +
+        "            \"fileSize\": \"719.63KB\",\n" +
+        "            \"ruleName\": \"kw-a100-1.9\",\n" +
+        "            \"fileParameter\": \"1920x1080\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-a100-1.9.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-a100-1.92.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-a100-1.92.jpg\",\n" +
+        "            \"fileSize\": \"739.98KB\",\n" +
+        "            \"ruleName\": \"kw-a100-1.92\",\n" +
+        "            \"fileParameter\": \"1920x1080\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-a100-1.92.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    },\n" +
+        "    {\n" +
+        "        \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-a100-1.93.jpg\": {\n" +
+        "            \"scaleAttUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/small/chair-cover-a100-1.93.jpg\",\n" +
+        "            \"fileSize\": \"126.50KB\",\n" +
+        "            \"ruleName\": \"kw-a100-1.93\",\n" +
+        "            \"fileParameter\": \"640x360\",\n" +
+        "            \"mainUrl\": \"https://d2qc09rl1gfuof.cloudfront.net/product/50TQBBSYT00000001/chair-cover-a100-1.93.jpg\",\n" +
+        "            \"fileType\": \"jpg\"\n" +
+        "        }\n" +
+        "    }\n" +
+        "]";
 }
