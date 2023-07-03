@@ -1,11 +1,14 @@
 package com.alibaba.excel.write.handler.filter;
 
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.NumberUtils;
 import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.BasePipeFilter;
 import com.alibaba.excel.write.handler.PipeDataWrapper;
 import lombok.extern.slf4j.Slf4j;
 
+import java.text.ParseException;
 import java.util.Objects;
 
 /**
@@ -18,6 +21,9 @@ import java.util.Objects;
 @Slf4j
 public class MaxSizeFilter extends BasePipeFilter<Object, Object> {
 
+    private static final String NUMBER_REG = "^[0-9]+(.[0-9]+)?$";
+    public static final String B_UPPER = "KB";
+    public static final String B_LOWER = "kb";
     public static final String KB_UPPER = "KB";
     public static final String KB_LOWER = "kb";
     public static final String MB_UPPER = "MB";
@@ -52,43 +58,38 @@ public class MaxSizeFilter extends BasePipeFilter<Object, Object> {
         }
         param = param.trim();
 
-        int paramInt;
-        int valueInt;
+        Double paramInt;
+        Double valueInt;
         String unit = KB_UPPER;
         try {
             paramInt = getParamInt(param);
             if (value instanceof String) {
                 String val = ((String) value).trim();
                 if (!StringUtils.isNumeric(val)) {
-                    if (val.endsWith(KB_UPPER) || val.endsWith(KB_LOWER)) {
+                    if (val.endsWith(B_UPPER) || val.endsWith(B_LOWER)) {
                         val = val.substring(0, val.length()-2);
-                        if (!StringUtils.isNumeric(val)) {
-                            throw new RuntimeException(errorPrefix() + "传入数据去掉[KB/kb]后应该是数字");
-                        }
-                        valueInt = Integer.parseInt(val) * 1024;
+                        valueInt = NumberUtils.parseDouble(val, ExcelContentProperty.EMPTY);
+                        unit = KB_UPPER;
+                    } else if (val.endsWith(KB_UPPER) || val.endsWith(KB_LOWER)) {
+                        val = val.substring(0, val.length()-2);
+                        valueInt = NumberUtils.parseDouble(val, ExcelContentProperty.EMPTY)  * 1024;
                         unit = KB_UPPER;
                     } else if (val.endsWith(MB_UPPER) || val.endsWith(MB_LOWER)) {
                         val = val.substring(0, val.length()-2);
-                        if (!StringUtils.isNumeric(val)) {
-                            throw new RuntimeException(errorPrefix() + "传入数据去掉[MB/mb]后应该是数字");
-                        }
-                        valueInt = Integer.parseInt(val) * 1024 * 1024;
+                        valueInt = NumberUtils.parseDouble(val, ExcelContentProperty.EMPTY)  * 1024  * 1024;
                         unit = MB_UPPER;
                     } else if (val.endsWith(GB_UPPER) || val.endsWith(GB_LOWER)) {
                         val = val.substring(0, val.length()-2);
-                        if (!StringUtils.isNumeric(val)) {
-                            throw new RuntimeException(errorPrefix() + "传入数据去掉[GB/gb]后应该是数字");
-                        }
-                        valueInt = Integer.parseInt(val) * 1024 * 1024 * 1024;
+                        valueInt = NumberUtils.parseDouble(val, ExcelContentProperty.EMPTY)  * 1024  * 1024 * 1024;
                         unit = GB_UPPER;
                     } else {
                         throw new RuntimeException(errorPrefix() + "传入数据类型应该是数字");
                     }
                 } else {
-                    valueInt = Integer.parseInt(val) * 1024;
+                    valueInt = NumberUtils.parseDouble(val, ExcelContentProperty.EMPTY)  * 1024;
                 }
             } else if (value instanceof Number) {
-                valueInt = ((Number) value).intValue() * 1024;
+                valueInt = ((Number) value).doubleValue() * 1024;
             } else {
                 throw new RuntimeException(errorPrefix() + "传入数据类型应该是数字");
             }
@@ -105,32 +106,38 @@ public class MaxSizeFilter extends BasePipeFilter<Object, Object> {
         return PipeDataWrapper.success(getResult(valueInt, unit));
     }
 
-    private int getParamInt(String param) {
-        int paramInt;
+    private Double getParamInt(String param) throws ParseException {
+        double paramInt;
         if (!StringUtils.isNumeric(param)) {
-            if (param.endsWith(KB_UPPER) || param.endsWith(KB_LOWER)) {
+            if (param.endsWith(B_UPPER) || param.endsWith(B_LOWER)) {
                 param = param.substring(0, param.length()-2);
-                if (!StringUtils.isNumeric(param)) {
+                if (!param.matches(NUMBER_REG)) {
+                    throw new RuntimeException(errorPrefix() + "参数去掉[B/b]后应该是数字");
+                }
+                paramInt = NumberUtils.parseDouble(param, ExcelContentProperty.EMPTY);
+            } else if (param.endsWith(KB_UPPER) || param.endsWith(KB_LOWER)) {
+                param = param.substring(0, param.length()-2);
+                if (!param.matches(NUMBER_REG)) {
                     throw new RuntimeException(errorPrefix() + "参数去掉[KB/kb]后应该是数字");
                 }
-                paramInt = Integer.parseInt(param) * 1024;
+                paramInt = NumberUtils.parseDouble(param, ExcelContentProperty.EMPTY) * 1024;
             } else if (param.endsWith(MB_UPPER) || param.endsWith(MB_LOWER)) {
                 param = param.substring(0, param.length()-2);
-                if (!StringUtils.isNumeric(param)) {
+                if (!param.matches(NUMBER_REG)) {
                     throw new RuntimeException(errorPrefix() + "参数去掉[MB/mb]后应该是数字");
                 }
-                paramInt = Integer.parseInt(param) * 1024 * 1024;
+                paramInt = NumberUtils.parseDouble(param, ExcelContentProperty.EMPTY) * 1024 *1024;
             } else if (param.endsWith(GB_UPPER) || param.endsWith(GB_LOWER)) {
                 param = param.substring(0, param.length()-2);
-                if (!StringUtils.isNumeric(param)) {
+                if (!param.matches(NUMBER_REG)) {
                     throw new RuntimeException(errorPrefix() + "参数去掉[GB/gb]后应该是数字");
                 }
-                paramInt = Integer.parseInt(param) * 1024 * 1024 * 1024;
+                paramInt = NumberUtils.parseDouble(param, ExcelContentProperty.EMPTY) * 1024 *1024 * 1024;
             } else {
                 throw new RuntimeException(errorPrefix() + "参数类型应该是数字");
             }
         } else {
-            paramInt = Integer.parseInt(param) * 1024;
+            paramInt = NumberUtils.parseDouble(param, ExcelContentProperty.EMPTY) * 1024;
         }
         return paramInt;
     }
@@ -141,7 +148,7 @@ public class MaxSizeFilter extends BasePipeFilter<Object, Object> {
      * @param unit
      * @return
      */
-    private static String getResult(int valueInt, String unit) {
+    private static String getResult(double valueInt, String unit) {
         String valueResult;
         switch (unit) {
             case MB_UPPER:
