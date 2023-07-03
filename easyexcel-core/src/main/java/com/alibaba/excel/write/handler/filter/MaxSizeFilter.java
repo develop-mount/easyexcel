@@ -22,8 +22,8 @@ import java.util.Objects;
 public class MaxSizeFilter extends BasePipeFilter<Object, Object> {
 
     private static final String NUMBER_REG = "^[0-9]+(.[0-9]+)?$";
-    public static final String B_UPPER = "KB";
-    public static final String B_LOWER = "kb";
+    public static final String B_UPPER = "B";
+    public static final String B_LOWER = "b";
     public static final String KB_UPPER = "KB";
     public static final String KB_LOWER = "kb";
     public static final String MB_UPPER = "MB";
@@ -66,11 +66,7 @@ public class MaxSizeFilter extends BasePipeFilter<Object, Object> {
             if (value instanceof String) {
                 String val = ((String) value).trim();
                 if (!StringUtils.isNumeric(val)) {
-                    if (val.endsWith(B_UPPER) || val.endsWith(B_LOWER)) {
-                        val = val.substring(0, val.length()-2);
-                        valueInt = NumberUtils.parseDouble(val, ExcelContentProperty.EMPTY);
-                        unit = KB_UPPER;
-                    } else if (val.endsWith(KB_UPPER) || val.endsWith(KB_LOWER)) {
+                    if (val.endsWith(KB_UPPER) || val.endsWith(KB_LOWER)) {
                         val = val.substring(0, val.length()-2);
                         valueInt = NumberUtils.parseDouble(val, ExcelContentProperty.EMPTY)  * 1024;
                         unit = KB_UPPER;
@@ -82,6 +78,10 @@ public class MaxSizeFilter extends BasePipeFilter<Object, Object> {
                         val = val.substring(0, val.length()-2);
                         valueInt = NumberUtils.parseDouble(val, ExcelContentProperty.EMPTY)  * 1024  * 1024 * 1024;
                         unit = GB_UPPER;
+                    } else if (val.endsWith(B_UPPER) || val.endsWith(B_LOWER)) {
+                        val = val.substring(0, val.length()-1);
+                        valueInt = NumberUtils.parseDouble(val, ExcelContentProperty.EMPTY);
+                        unit = KB_UPPER;
                     } else {
                         throw new RuntimeException(errorPrefix() + "传入数据类型应该是数字");
                     }
@@ -109,13 +109,7 @@ public class MaxSizeFilter extends BasePipeFilter<Object, Object> {
     private Double getParamInt(String param) throws ParseException {
         double paramInt;
         if (!StringUtils.isNumeric(param)) {
-            if (param.endsWith(B_UPPER) || param.endsWith(B_LOWER)) {
-                param = param.substring(0, param.length()-2);
-                if (!param.matches(NUMBER_REG)) {
-                    throw new RuntimeException(errorPrefix() + "参数去掉[B/b]后应该是数字");
-                }
-                paramInt = NumberUtils.parseDouble(param, ExcelContentProperty.EMPTY);
-            } else if (param.endsWith(KB_UPPER) || param.endsWith(KB_LOWER)) {
+            if (param.endsWith(KB_UPPER) || param.endsWith(KB_LOWER)) {
                 param = param.substring(0, param.length()-2);
                 if (!param.matches(NUMBER_REG)) {
                     throw new RuntimeException(errorPrefix() + "参数去掉[KB/kb]后应该是数字");
@@ -133,6 +127,12 @@ public class MaxSizeFilter extends BasePipeFilter<Object, Object> {
                     throw new RuntimeException(errorPrefix() + "参数去掉[GB/gb]后应该是数字");
                 }
                 paramInt = NumberUtils.parseDouble(param, ExcelContentProperty.EMPTY) * 1024 *1024 * 1024;
+            } else if (param.endsWith(B_UPPER) || param.endsWith(B_LOWER)) {
+                param = param.substring(0, param.length()-1);
+                if (!param.matches(NUMBER_REG)) {
+                    throw new RuntimeException(errorPrefix() + "参数去掉[B/b]后应该是数字");
+                }
+                paramInt = NumberUtils.parseDouble(param, ExcelContentProperty.EMPTY);
             } else {
                 throw new RuntimeException(errorPrefix() + "参数类型应该是数字");
             }
