@@ -209,6 +209,14 @@ class PipeFilterFactoryTest {
         Assert.isTrue(apply.success(), "失败");
     }
 
+    @Test
+    void testMaxSiz() {
+        PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter(null);
+        pipeFilterFactory.addParams("PublishCenter.Bullet Point.bulletPoints | max-size:5");
+        val apply = pipeFilterFactory.apply(PipeDataWrapper.success("3MB"));
+        Assert.isTrue(apply.success(), "失败");
+    }
+
     private static String data1 = "[\n" +
         "    \"Heavy-Duty Frame and Bags: Simplify your laundry routine with the remarkable laundry sorter cart. Its heavy-duty 600D Oxford cloth bags are waterproof and easy to clean, while the thickened metal frame and 6 horizontal bars provide enhanced stability.\",\n" +
         "    \"Ample Storage Capacity: Each heavy-duty bag holds up to 25 lbs of clothes, providing ample space for clothes, towels, bedding, and other laundry items, keeping them organized and easily accessible. The basket serves as a practical storage solution when not used for carrying laundry.\",\n" +
