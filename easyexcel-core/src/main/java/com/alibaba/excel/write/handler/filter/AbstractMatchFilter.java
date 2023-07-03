@@ -122,7 +122,7 @@ public abstract class AbstractMatchFilter extends BasePipeFilter<Object, Object>
                 }
                 if (col instanceof String) {
                     String cel = (String) col;
-                    if (matchProcess(cel, center)) {
+                    if (StringUtils.isNotBlank(cel) && matchProcess(cel, center)) {
                         result = cel;
                         break;
                     }
@@ -143,7 +143,7 @@ public abstract class AbstractMatchFilter extends BasePipeFilter<Object, Object>
             }
         } else if (value instanceof String) {
             String col = (String) value;
-            if (matchProcess(col, center)) {
+            if (StringUtils.isNotBlank(col) && matchProcess(col, center)) {
                 return PipeDataWrapper.success(col);
             } else {
                 return PipeDataWrapper.error(errorPrefix() + String.format("没有包含[%s]的数据", center));
