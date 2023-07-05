@@ -17,6 +17,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.vevor</groupId>
+            <artifactId>pipe-filter-easyexcel</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel-support</artifactId>
         </dependency>

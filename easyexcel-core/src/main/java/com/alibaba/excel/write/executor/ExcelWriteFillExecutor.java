@@ -25,16 +25,16 @@ import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WriteHandlerUtils;
-import com.alibaba.excel.write.handler.PipeDataWrapper;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
 import com.alibaba.excel.write.metadata.fill.AnalysisCell;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
-import com.alibaba.excel.write.handler.PipeFilterFactory;
 import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
+import com.vevor.expression.filter.EasyPipeFilterFactory;
+import com.vevor.expression.filter.PipeDataWrapper;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -240,8 +240,15 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 if (PipeFilterUtils.isPipeline(variable)) {
                     value = PipeFilterUtils.getValueOfMap(dataMap, PipeFilterUtils.getVariableName(variable));
                     try {
-                        PipeDataWrapper<Object> wrapper = PipeFilterFactory.createPipeFilter(writeContext)
-                            .setCell(analysisCell.getRowIndex(), analysisCell.getColumnIndex())
+
+                        EasyPipeFilterFactory easyPipeFilterFactory = EasyPipeFilterFactory.createPipeFilter();
+                        if (Objects.nonNull(writeContext)
+                            && Objects.nonNull(writeContext.writeWorkbookHolder())
+                            && Objects.nonNull(writeContext.writeWorkbookHolder().getWriteWorkbook())
+                            && !PipeFilterUtils.isEmpty(writeContext.writeWorkbookHolder().getWriteWorkbook().getCustomPipeFilterMap())) {
+                            easyPipeFilterFactory.customerPipeFilter(writeContext.writeWorkbookHolder().getWriteWorkbook().getCustomPipeFilterMap());
+                        }
+                        PipeDataWrapper<Object> wrapper = easyPipeFilterFactory.setCell(analysisCell.getRowIndex(), analysisCell.getColumnIndex())
                             .addParams(variable).apply(PipeDataWrapper.success(value));
                         if (wrapper.success()) {
                             value = wrapper.getData();
@@ -297,8 +304,14 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     if (PipeFilterUtils.isPipeline(variable)) {
                         value = PipeFilterUtils.getValueOfMap(dataMap, PipeFilterUtils.getVariableName(variable));
                         try {
-                            PipeDataWrapper<Object> wrapper = PipeFilterFactory.createPipeFilter(writeContext)
-                                .setCell(analysisCell.getRowIndex(), analysisCell.getColumnIndex())
+                            EasyPipeFilterFactory easyPipeFilterFactory = EasyPipeFilterFactory.createPipeFilter();
+                            if (Objects.nonNull(writeContext)
+                                && Objects.nonNull(writeContext.writeWorkbookHolder())
+                                && Objects.nonNull(writeContext.writeWorkbookHolder().getWriteWorkbook())
+                                && !PipeFilterUtils.isEmpty(writeContext.writeWorkbookHolder().getWriteWorkbook().getCustomPipeFilterMap())) {
+                                easyPipeFilterFactory.customerPipeFilter(writeContext.writeWorkbookHolder().getWriteWorkbook().getCustomPipeFilterMap());
+                            }
+                            PipeDataWrapper<Object> wrapper = easyPipeFilterFactory.setCell(analysisCell.getRowIndex(), analysisCell.getColumnIndex())
                                 .addParams(variable).apply(PipeDataWrapper.success(value));
                             if (wrapper.success()) {
                                 value = wrapper.getData();
