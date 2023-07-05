@@ -86,6 +86,18 @@ class PipeFilterFactoryTest {
         Assert.isTrue(apply.success(), "失败");
     }
 
+    @Test
+    void testlistecho() {
+        PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter(null);
+        pipeFilterFactory.addParams("test | list-echo: > ");
+        val apply = pipeFilterFactory.apply(PipeDataWrapper.success(Arrays.asList("http://www.baidu.com/images/m100-1.1.jpg"
+            , "http://www.baidu.com/images/m100-1.2.jpg"
+            , "http://www.baidu.com/images/m100-1.3.jpg"
+            , "http://www.baidu.com/images/m100-1.4.jpg"
+            , "http://www.baidu.com/images/m100-1.5.jpg"
+            , "http://www.baidu.com/images/K100-1.2.jpg")));
+        Assert.isTrue(apply.success(), "失败");
+    }
 
     @Test
     void testSubstr() {
