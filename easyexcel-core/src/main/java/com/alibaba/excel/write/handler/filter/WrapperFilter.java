@@ -48,13 +48,27 @@ public class WrapperFilter extends AbstractEchoFilter {
             return PipeDataWrapper.success("");
         }
 
-        String delimiter = params().get(0);
-
-        Delimiter delimiterEnum = Delimiter.ofValue(delimiter);
-        if (Objects.nonNull(delimiterEnum)) {
-            return PipeDataWrapper.success(val + delimiterEnum.getDelimiter());
+        String left = params().get(0);
+        Delimiter leftDelimiter = Delimiter.ofValue(left);
+        if (Objects.nonNull(leftDelimiter)) {
+            left = leftDelimiter.getDelimiter();
         }
 
-        return PipeDataWrapper.success(delimiter + val + delimiter);
+        String right;
+        if (params().size() > 1) {
+            right = params().get(1);
+            if (StringUtils.isBlank(right)) {
+                right = left;
+            } else {
+                Delimiter rightDelimiter = Delimiter.ofValue(left);
+                if (Objects.nonNull(rightDelimiter)) {
+                    right = rightDelimiter.getDelimiter();
+                }
+            }
+        } else {
+            right = left;
+        }
+
+        return PipeDataWrapper.success(left + val + right);
     }
 }
