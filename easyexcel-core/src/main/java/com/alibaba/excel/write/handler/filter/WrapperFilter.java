@@ -49,6 +49,9 @@ public class WrapperFilter extends AbstractEchoFilter {
         }
 
         String left = params().get(0);
+        if (StringUtils.isBlank(left)) {
+            return PipeDataWrapper.error(errorPrefix() + "参数应是一个或2个参数");
+        }
         Delimiter leftDelimiter = Delimiter.ofValue(left);
         if (Objects.nonNull(leftDelimiter)) {
             left = leftDelimiter.getDelimiter();
