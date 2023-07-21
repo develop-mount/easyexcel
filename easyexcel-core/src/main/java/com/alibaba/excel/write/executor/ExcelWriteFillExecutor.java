@@ -394,7 +394,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 if (Objects.nonNull(errorData) && StringUtils.isNotBlank((String) errorData)) {
 
                     //noinspection unchecked
-                    dataMap.put(getFillErrorField(), errorData + ";" + msg);
+                    dataMap.put(getFillErrorField(), errorData + "\n" + msg);
                 } else {
                     //noinspection unchecked
                     dataMap.put(getFillErrorField(), msg);
