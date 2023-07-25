@@ -1,6 +1,5 @@
 package com.alibaba.excel.write.handler;
 
-import com.alibaba.excel.exception.ExcelRuntimeException;
 import com.alibaba.excel.write.handler.filter.CellRedFilter;
 import com.alibaba.excel.write.handler.filter.FormulaFilter;
 import com.alibaba.excel.write.handler.filter.WatchFilter;
@@ -8,15 +7,9 @@ import com.vevor.expression.filter.BasePipeFilter;
 import com.vevor.expression.filter.PipeDataWrapper;
 import com.vevor.expression.filter.PipeFilterFactory;
 import com.vevor.expression.filter.PipeFilterPool;
-import com.vevor.expression.filter.utils.PipeFilterUtils;
-import com.vevor.expression.filter.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -78,7 +71,7 @@ public class EasyPipeFilterFactory extends PipeFilterFactory {
     /**
      *
      * @param pipeFilterMap pipe filer map
-     * @return
+     * @return easy excel pipe filter
      */
     public EasyPipeFilterFactory customerPipeFilter(Map<String, Supplier<BasePipeFilter<Object, Object>>> pipeFilterMap) {
         PipeFilterPool.INSTANCE.addPipeFilter(pipeFilterMap);
@@ -99,66 +92,7 @@ public class EasyPipeFilterFactory extends PipeFilterFactory {
     }
 
     @Override
-    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> value) {
-
-        if (PipeFilterUtils.isEmpty(params())) {
-            throw new ExcelRuntimeException("管道字符串格式不正确");
-        }
-
-        String variable = params().get(0);
-        if (StringUtils.isBlank(variable)) {
-            throw new ExcelRuntimeException("管道字符串格式不正确");
-        }
-
-        String[] pipeArray = PipeFilterUtils.getPipelines(variable);
-        Objects.requireNonNull(pipeArray, "管道字符串格式不正确");
-        if (pipeArray.length <= 1) {
-            throw new ExcelRuntimeException("管道字符串格式不正确");
-        }
-
-        String variableName = pipeArray[0];
-
-        List<BasePipeFilter<Object, Object>> pipeFilterList = new ArrayList<>();
-        for (int i = 1; i < pipeArray.length; i++) {
-            if (StringUtils.isBlank(pipeArray[i])) {
-                continue;
-            }
-
-            String[] expressArray = PipeFilterUtils.getPipeFilter(pipeArray[i], 2);
-            if (StringUtils.isBlank(expressArray[0])) {
-                continue;
-            }
-
-            String filterName = PipeFilterUtils.trim(expressArray[0]).toLowerCase();
-            if (StringUtils.isBlank(filterName)) {
-                continue;
-            }
-
-            Supplier<BasePipeFilter<Object, Object>> supplier = PipeFilterPool.INSTANCE.getPipeFilter(filterName);
-            if (Objects.isNull(supplier)) {
-                throw new ExcelRuntimeException(String.format("没有[%s]的管道过滤器", filterName));
-            }
-            BasePipeFilter<Object, Object> pipeFilter = supplier.get();
-            if (Objects.nonNull(pipeFilter)) {
-                pipeFilterList.add(pipeFilter);
-            }
-
-            if (expressArray.length > 1 && StringUtils.isNotBlank(expressArray[1])) {
-                String[] paramArray = PipeFilterUtils.getPipeFilterParams(PipeFilterUtils.trim(expressArray[1]));
-                pipeFilter.addParams(paramArray);
-            }
-            pipeFilter.setNoticePrefix(String.format("[%s]列,[%s]变量的", columnName, variableName));
-        }
-
-        if (PipeFilterUtils.isEmpty(pipeFilterList)) {
-            return value;
-        }
-        // 构建pipeline
-        Function<PipeDataWrapper<Object>, PipeDataWrapper<Object>> currFilter = pipeFilterList.get(0);
-        for (int i = 1; i < pipeFilterList.size(); i++) {
-            currFilter = currFilter.andThen(pipeFilterList.get(i));
-        }
-        PipeDataWrapper<Object> dataWrapper = currFilter.apply(value);
+    protected PipeDataWrapper<Object> applyAfter(PipeDataWrapper<Object> dataWrapper) {
         if (isValidity(dataWrapper)) {
             return dataWrapper;
         }
@@ -167,6 +101,10 @@ public class EasyPipeFilterFactory extends PipeFilterFactory {
         return PipeDataWrapper.error(msg);
     }
 
+    @Override
+    protected void noticePrefix(BasePipeFilter<Object, Object> pipeFilter, String variableName) {
+        pipeFilter.setNoticePrefix(String.format("[%s]列,[%s]变量的", columnName, variableName));
+    }
 
     @Override
     protected String filterName() {
