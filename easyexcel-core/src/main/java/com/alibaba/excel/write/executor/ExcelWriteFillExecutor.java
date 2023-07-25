@@ -291,11 +291,12 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 List<WriteCellData<?>> cellDataList = new ArrayList<>();
 
                 cellWriteHandlerContext.setExcelContentProperty(ExcelContentProperty.EMPTY);
-                cellWriteHandlerContext.setIgnoreFillStyle(Boolean.TRUE);
+                cellWriteHandlerContext.setIgnoreFillStyle(Boolean.FALSE);
 
                 createCell(analysisCell, fillConfig, cellWriteHandlerContext, rowWriteHandlerContext);
                 Cell cell = cellWriteHandlerContext.getCell();
 
+                CellStyle cellStyle = null;
                 for (String variable : analysisCell.getVariableList()) {
                     cellValueBuild.append(analysisCell.getPrepareDataList().get(index++));
 
@@ -339,6 +340,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     cellWriteHandlerContext.setTargetCellDataType(CellDataTypeEnum.STRING);
 
                     WriteCellData<?> cellData = convert(cellWriteHandlerContext);
+                    // Fill in style information
+                    fillStyle(cellWriteHandlerContext, cellData.getWriteCellStyle());
+
                     cellDataList.add(cellData);
 
                     CellDataTypeEnum type = cellData.getType();
@@ -364,6 +368,10 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 if (CollectionUtils.isNotEmpty(cellDataList)) {
                     cellWriteHandlerContext.setFirstCellData(cellDataList.get(0));
                 }
+
+//                if (Objects.nonNull(cellStyle)) {
+//                    cell.setCellStyle(cellStyle);
+//                }
 
                 // Restyle
                 if (fillConfig.getAutoStyle()) {

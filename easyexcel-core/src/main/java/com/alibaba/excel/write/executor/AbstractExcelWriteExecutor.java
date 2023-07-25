@@ -1,6 +1,7 @@
 package com.alibaba.excel.write.executor;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.converters.Converter;
@@ -24,16 +25,10 @@ import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.ClientAnchor;
-import org.apache.poi.ss.usermodel.Comment;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.Hyperlink;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 
 /**
@@ -73,6 +68,9 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         // Fill in formula information
         fillFormula(cellWriteHandlerContext, cellData.getFormulaData());
 
+        // Fill in style information
+        fillStyle(cellWriteHandlerContext, cellData.getWriteCellStyle());
+
         // Fill index
         cellData.setRowIndex(cellWriteHandlerContext.getRowIndex());
         cellData.setColumnIndex(cellWriteHandlerContext.getColumnIndex());
@@ -107,6 +105,23 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
                         + "at row:" + cellWriteHandlerContext.getRowIndex());
         }
 
+    }
+
+    protected void fillStyle(CellWriteHandlerContext cellWriteHandlerContext, WriteCellStyle writeCellStyle) {
+
+        if (Objects.isNull(cellWriteHandlerContext)) {
+            return;
+        }
+        Cell cell = cellWriteHandlerContext.getCell();
+        if (Objects.isNull(cell)) {
+            return;
+        }
+        cell.getCellStyle().setFillForegroundColor((short)64);
+
+        if (Objects.nonNull(writeCellStyle) && Objects.nonNull(writeCellStyle.getFillForegroundColor())) {
+            CellStyle cellStyle = cell.getCellStyle();
+            cellStyle.setFillForegroundColor(writeCellStyle.getFillForegroundColor());
+        }
     }
 
     private void fillFormula(CellWriteHandlerContext cellWriteHandlerContext, FormulaData formulaData) {
