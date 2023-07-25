@@ -25,16 +25,16 @@ import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WriteHandlerUtils;
+import com.alibaba.excel.write.handler.EasyPipeFilterFactory;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
 import com.alibaba.excel.write.metadata.fill.AnalysisCell;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
-import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
-import com.vevor.expression.filter.EasyPipeFilterFactory;
 import com.vevor.expression.filter.PipeDataWrapper;
+import com.vevor.expression.filter.utils.PipeFilterUtils;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

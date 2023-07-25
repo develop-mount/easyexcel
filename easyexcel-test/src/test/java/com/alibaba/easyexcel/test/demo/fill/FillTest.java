@@ -9,6 +9,11 @@ import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
+import com.alibaba.fastjson2.JSONArray;
+import com.vevor.expression.filter.PipeDataWrapper;
+import com.vevor.expression.filter.PipeFilterFactory;
+import lombok.val;
+import net.minidev.json.JSONUtil;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -60,6 +65,16 @@ public class FillTest {
      */
     @Test
     public void simpleFill() {
+
+
+
+//        PipeFilterFactory pipeFilterFactory = PipeFilterFactory.createPipeFilter();
+//        pipeFilterFactory.addParams("PublishCenter.Bullet Point.bulletPoints | prior-extract:(,&#58),(【,】) | wrapper:blank,blank | list-echo:✅");
+//        val apply = pipeFilterFactory.apply(PipeDataWrapper.success(Arrays.asList("4.3 inch Pipe Capacity: The snap-on jaw of this cast steel pipe wrench is adjustable, providing the largest grip surface. Maximum ope",
+//            "High Strength Steel: This 48ipe wrench is made of premium cast steel, through heat treatment. ",
+//            "Adjustable Jaw Design: The heavy-duty pipe wrench has a non-stick adjustment nut for easily adjust the jaw opening to fit different pipe diameter",
+//            "Wide Application: Our wrench is suitable")));
+
         // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
         String templateFileName =
             TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "simple.xlsx";
@@ -68,17 +83,21 @@ public class FillTest {
         String fileName = TestFileUtil.getPath() + "simpleFill" + System.currentTimeMillis() + ".xlsx";
         // 这里 会填充到第一个sheet， 然后文件流会自动关闭
         FillData fillData = new FillData();
-        fillData.setName("张三");
+        fillData.setBulletPoints(Arrays.asList("4.3 inch Pipe Capacity: The snap-on jaw of this cast steel pipe wrench is adjustable, providing the largest grip surface. Maximum ope",
+            "High Strength Steel: This 48ipe wrench is made of premium cast steel, through heat treatment. ",
+            "Adjustable Jaw Design: The heavy-duty pipe wrench has a non-stick adjustment nut for easily adjust the jaw opening to fit different pipe diameter",
+            "Wide Application: Our wrench is suitable"));
+        fillData.setName(("张三✅"));
         fillData.setNumber(5.2);
         EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(fillData);
 
-        // 方案2 根据Map填充
-        fileName = TestFileUtil.getPath() + "simpleFill" + System.currentTimeMillis() + ".xlsx";
-        // 这里 会填充到第一个sheet， 然后文件流会自动关闭
-        Map<String, Object> map = MapUtils.newHashMap();
-        map.put("name", "张三");
-        map.put("number", 5.2);
-        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(map);
+//        // 方案2 根据Map填充
+//        fileName = TestFileUtil.getPath() + "simpleFill" + System.currentTimeMillis() + ".xlsx";
+//        // 这里 会填充到第一个sheet， 然后文件流会自动关闭
+//        Map<String, Object> map = MapUtils.newHashMap();
+//        map.put("name", "张三✅");
+//        map.put("number", 5.2);
+//        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(map);
     }
 
     /**

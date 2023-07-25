@@ -14,6 +14,7 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode
 public class FillData {
+    private List<String> bulletPoints;
     private String name;
     private double number;
     private Date date;

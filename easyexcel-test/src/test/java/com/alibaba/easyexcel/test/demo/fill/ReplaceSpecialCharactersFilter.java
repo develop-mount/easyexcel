@@ -45,7 +45,7 @@ public class ReplaceSpecialCharactersFilter extends BasePipeFilter<Object, Objec
     }
 
     @Override
-    public PipeDataWrapper<Object> apply(PipeDataWrapper<Object> wrapper) {
+    public PipeDataWrapper<Object> handlerApply(PipeDataWrapper<Object> wrapper) {
 
         // 验证
         if (!verify(wrapper)) {

@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>com.vevor</groupId>
-            <artifactId>pipe-filter-easyexcel</artifactId>
+            <artifactId>pipe-filter</artifactId>
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
