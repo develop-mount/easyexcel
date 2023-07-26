@@ -17,6 +17,8 @@ public class FillData {
     private List<String> bulletPoints;
     private String name;
     private double number;
+    private double test1;
+    private double test2;
     private Date date;
     private List<String> images;
     private String error;

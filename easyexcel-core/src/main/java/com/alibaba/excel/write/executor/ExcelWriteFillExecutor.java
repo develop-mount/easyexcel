@@ -16,6 +16,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.WriteDirectionEnum;
 import com.alibaba.excel.enums.WriteTemplateAnalysisCellTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
+import com.alibaba.excel.metadata.data.FormulaData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.BeanMapUtils;
@@ -296,7 +297,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 createCell(analysisCell, fillConfig, cellWriteHandlerContext, rowWriteHandlerContext);
                 Cell cell = cellWriteHandlerContext.getCell();
 
-                CellStyle cellStyle = null;
+                boolean isFormulaData = false;
                 for (String variable : analysisCell.getVariableList()) {
                     cellValueBuild.append(analysisCell.getPrepareDataList().get(index++));
 
@@ -320,6 +321,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                                 value = wrapper.getData();
                                 fillError2DataMap(dataMap, wrapper.getMessage(), globalMsg);
                                 analysisCell.setMessage(wrapper.getMessage());
+                            }
+                            if (wrapper.getExtra() instanceof FormulaData) {
+                                isFormulaData = true;
                             }
                         } catch (Exception e) {
                             value = "";
@@ -364,14 +368,14 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 }
                 cellValueBuild.append(analysisCell.getPrepareDataList().get(index));
                 cell.setCellValue(cellValueBuild.toString());
+
+                if (isFormulaData) {
+                    cell.setCellFormula(cellValueBuild.toString());
+                }
                 cellWriteHandlerContext.setCellDataList(cellDataList);
                 if (CollectionUtils.isNotEmpty(cellDataList)) {
                     cellWriteHandlerContext.setFirstCellData(cellDataList.get(0));
                 }
-
-//                if (Objects.nonNull(cellStyle)) {
-//                    cell.setCellStyle(cellStyle);
-//                }
 
                 // Restyle
                 if (fillConfig.getAutoStyle()) {

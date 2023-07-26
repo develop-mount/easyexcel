@@ -1,5 +1,6 @@
 package com.alibaba.excel.write.handler;
 
+import com.alibaba.excel.write.handler.filter.CellFormulaFilter;
 import com.alibaba.excel.write.handler.filter.CellRedFilter;
 import com.alibaba.excel.write.handler.filter.FormulaFilter;
 import com.alibaba.excel.write.handler.filter.WatchFilter;
@@ -30,6 +31,7 @@ public class EasyPipeFilterFactory extends PipeFilterFactory {
         PipeFilterPool.INSTANCE.addPipeFilter("formula", FormulaFilter::new);
         PipeFilterPool.INSTANCE.addPipeFilter("cell-red", CellRedFilter::new);
         PipeFilterPool.INSTANCE.addPipeFilter("watch", WatchFilter::new);
+        PipeFilterPool.INSTANCE.addPipeFilter("cell-formula", CellFormulaFilter::new);
     }
 
     /**
@@ -43,15 +45,16 @@ public class EasyPipeFilterFactory extends PipeFilterFactory {
 
     /**
      * 转换列名
+     *
      * @param column 列号
      * @return 列名
      */
-    protected String convertColumnToName(int column){
+    protected String convertColumnToName(int column) {
         StringBuilder colIndex = new StringBuilder();
-        while(column>=0){
-            int i= column%26;
-            colIndex.append((char)(i+65));
-            column = column/26 -1;
+        while (column >= 0) {
+            int i = column % 26;
+            colIndex.append((char) (i + 65));
+            column = column / 26 - 1;
         }
         return colIndex.reverse().toString();
     }
@@ -69,7 +72,6 @@ public class EasyPipeFilterFactory extends PipeFilterFactory {
     }
 
     /**
-     *
      * @param pipeFilterMap pipe filer map
      * @return easy excel pipe filter
      */
@@ -79,7 +81,6 @@ public class EasyPipeFilterFactory extends PipeFilterFactory {
     }
 
     /**
-     *
      * @param row    行下标
      * @param column 列下标
      * @return this
