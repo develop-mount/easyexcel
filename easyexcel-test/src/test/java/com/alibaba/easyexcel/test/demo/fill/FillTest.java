@@ -1,14 +1,18 @@
 package com.alibaba.easyexcel.test.demo.fill;
 
+import com.alibaba.easyexcel.test.temp.simple.WriteHandler;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.enums.WriteDirectionEnum;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.util.MapUtils;
+import com.alibaba.excel.write.handler.context.SheetWriteHandlerContext;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -22,6 +26,21 @@ import java.util.*;
  */
 
 public class FillTest {
+
+    @Test
+    void testCellRow() {
+        // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
+        String templateFileName =
+            TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "row.xlsx";
+
+        // 方案1 根据对象填充
+        String fileName = TestFileUtil.getPath() + "rowFill" + System.currentTimeMillis() + ".xlsx";
+        // 这里 会填充到第一个sheet， 然后文件流会自动关闭
+        FillData fillData = new FillData();
+        fillData.setName("u'张三è");
+        fillData.setNumber(5.2);
+        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(fillData);
+    }
 
     @Test
     void testCellRed() {
@@ -67,7 +86,13 @@ public class FillTest {
         fillData.setNumber(5.2);
         fillData.setTest1(100);
         fillData.setTest2(200);
-        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(fillData);
+        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().registerWriteHandler(new WriteHandler(){
+            @Override
+            public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
+                super.afterSheetCreate(writeWorkbookHolder, writeSheetHolder);
+                writeWorkbookHolder.getWorkbook().setForceFormulaRecalculation(true);
+            }
+        }).doFill(fillData);
     }
     @Test
     void testCustomerRegisterFilter() {

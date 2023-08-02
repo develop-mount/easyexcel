@@ -1,9 +1,8 @@
 package com.alibaba.excel.write.handler;
 
-import com.alibaba.excel.write.handler.filter.CellFormulaFilter;
-import com.alibaba.excel.write.handler.filter.CellRedFilter;
-import com.alibaba.excel.write.handler.filter.FormulaFilter;
-import com.alibaba.excel.write.handler.filter.WatchFilter;
+import com.alibaba.excel.util.StringUtils;
+import com.alibaba.excel.write.handler.filter.*;
+import com.alibaba.excel.write.metadata.fill.CellInfo;
 import com.vevor.expression.filter.BasePipeFilter;
 import com.vevor.expression.filter.PipeDataWrapper;
 import com.vevor.expression.filter.PipeFilterFactory;
@@ -23,15 +22,14 @@ import java.util.function.Supplier;
 @Slf4j
 public class EasyPipeFilterFactory extends PipeFilterFactory {
 
-    protected int rowIndex;
-    protected int columnIndex;
-    protected String columnName;
+    protected CellInfo cellInfo;
 
     static {
         PipeFilterPool.INSTANCE.addPipeFilter("formula", FormulaFilter::new);
         PipeFilterPool.INSTANCE.addPipeFilter("cell-red", CellRedFilter::new);
         PipeFilterPool.INSTANCE.addPipeFilter("watch", WatchFilter::new);
         PipeFilterPool.INSTANCE.addPipeFilter("cell-formula", CellFormulaFilter::new);
+        PipeFilterPool.INSTANCE.addPipeFilter("echo-cell-row", EchoCellRowFilter::new);
     }
 
     /**
@@ -86,9 +84,7 @@ public class EasyPipeFilterFactory extends PipeFilterFactory {
      * @return this
      */
     public EasyPipeFilterFactory setCell(int row, int column) {
-        this.rowIndex = row;
-        this.columnIndex = column;
-        this.columnName = convertColumnToName(column);
+        this.cellInfo = new CellInfo(row, column, convertColumnToName(column));
         return this;
     }
 
@@ -97,14 +93,25 @@ public class EasyPipeFilterFactory extends PipeFilterFactory {
         if (isValidity(dataWrapper)) {
             return dataWrapper;
         }
-        String msg = String.format("第[%s]列,数据错误:变量值类型错误，不应该是%s", columnName, dataWrapper.getData().getClass().getSimpleName());
+        String msg = String.format("第[%s]列,数据错误:变量值类型错误，不应该是%s", cellInfo.getColumnName(), dataWrapper.getData().getClass().getSimpleName());
         log.debug(msg);
         return PipeDataWrapper.error(msg);
     }
 
     @Override
     protected void noticePrefix(BasePipeFilter<Object, Object> pipeFilter, String variableName) {
-        pipeFilter.setNoticePrefix(String.format("[%s]列,[%s]变量的", columnName, variableName));
+        if (StringUtils.isBlank(cellInfo.getColumnName())) {
+            throw new RuntimeException("请先调用setCell方法设置行列值");
+        }
+        pipeFilter.setNoticePrefix(String.format("[%s]列,[%s]变量的", cellInfo.getColumnName(), variableName));
+    }
+
+    @Override
+    protected void additionalInfo(BasePipeFilter<Object, Object> pipeFilter) {
+        if (StringUtils.isBlank(cellInfo.getColumnName())) {
+            throw new RuntimeException("请先调用setCell方法设置行列值");
+        }
+        pipeFilter.addExtra(cellInfo);
     }
 
     @Override

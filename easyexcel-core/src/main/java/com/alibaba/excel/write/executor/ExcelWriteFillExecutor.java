@@ -371,6 +371,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
 
                 if (isFormulaData) {
                     cell.setCellFormula(cellValueBuild.toString());
+                    cellWriteHandlerContext.getWriteWorkbookHolder().getWorkbook().setForceFormulaRecalculation(true);
                 }
                 cellWriteHandlerContext.setCellDataList(cellDataList);
                 if (CollectionUtils.isNotEmpty(cellDataList)) {

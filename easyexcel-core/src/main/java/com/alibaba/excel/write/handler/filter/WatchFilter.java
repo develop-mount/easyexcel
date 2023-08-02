@@ -18,8 +18,9 @@ public class WatchFilter extends BasePipeFilter<Object, Object> {
 
     @Override
     public PipeDataWrapper<Object> handlerApply(PipeDataWrapper<Object> wrapper) {
-        if (wrapper.success()) {
-            return PipeDataWrapper.success(wrapper.getData());
+        // 验证
+        if (!verify(wrapper)) {
+            return wrapper;
         }
         return PipeDataWrapper.error(wrapper.getMessage(), wrapper.getData());
     }

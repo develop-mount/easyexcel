@@ -131,6 +131,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         Cell cell = cellWriteHandlerContext.getCell();
         if (formulaData.getFormulaValue() != null) {
             cell.setCellFormula(formulaData.getFormulaValue());
+            cellWriteHandlerContext.getWriteWorkbookHolder().getWorkbook().setForceFormulaRecalculation(true);
         }
     }
 
