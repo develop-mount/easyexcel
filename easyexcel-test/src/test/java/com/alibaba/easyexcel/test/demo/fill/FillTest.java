@@ -7,6 +7,7 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.enums.WriteDirectionEnum;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.util.MapUtils;
+import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.handler.context.SheetWriteHandlerContext;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
@@ -39,7 +40,17 @@ public class FillTest {
         FillData fillData = new FillData();
         fillData.setName("u'张三è");
         fillData.setNumber(5.2);
-        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(fillData);
+        List<FillData> fillData1 = new ArrayList<>();
+        fillData1.add(fillData);
+        fillData1.add(fillData);
+        fillData1.add(fillData);
+
+        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().registerWriteHandler(new SheetWriteHandler(){
+            @Override
+            public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
+                writeWorkbookHolder.getWorkbook().setForceFormulaRecalculation(true);
+            }
+        }).doFill(fillData1);
     }
 
     @Test

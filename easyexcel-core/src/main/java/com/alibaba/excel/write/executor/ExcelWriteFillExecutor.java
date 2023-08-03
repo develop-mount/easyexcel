@@ -249,7 +249,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                             && !PipeFilterUtils.isEmpty(writeContext.writeWorkbookHolder().getWriteWorkbook().getCustomPipeFilterMap())) {
                             easyPipeFilterFactory.customerPipeFilter(writeContext.writeWorkbookHolder().getWriteWorkbook().getCustomPipeFilterMap());
                         }
-                        PipeDataWrapper<Object> wrapper = easyPipeFilterFactory.setCell(analysisCell.getRowIndex(), analysisCell.getColumnIndex())
+                        PipeDataWrapper<Object> wrapper = easyPipeFilterFactory.setCell(analysisCell.getRowIndex() + relativeRowIndex, analysisCell.getColumnIndex())
                             .addParams(variable).apply(PipeDataWrapper.success(value));
                         if (wrapper.success()) {
                             value = wrapper.getData();
@@ -313,7 +313,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                                 && !PipeFilterUtils.isEmpty(writeContext.writeWorkbookHolder().getWriteWorkbook().getCustomPipeFilterMap())) {
                                 easyPipeFilterFactory.customerPipeFilter(writeContext.writeWorkbookHolder().getWriteWorkbook().getCustomPipeFilterMap());
                             }
-                            PipeDataWrapper<Object> wrapper = easyPipeFilterFactory.setCell(analysisCell.getRowIndex(), analysisCell.getColumnIndex())
+                            PipeDataWrapper<Object> wrapper = easyPipeFilterFactory.setCell(analysisCell.getRowIndex() + relativeRowIndex, analysisCell.getColumnIndex())
                                 .addParams(variable).apply(PipeDataWrapper.success(value));
                             if (wrapper.success()) {
                                 value = wrapper.getData();
