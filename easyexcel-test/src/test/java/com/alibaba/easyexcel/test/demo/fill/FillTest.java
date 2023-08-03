@@ -29,6 +29,47 @@ import java.util.*;
 public class FillTest {
 
     @Test
+    void testCellRow1() {
+        // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
+        String templateFileName =
+            TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "row-one.xlsx";
+
+        // 方案1 根据对象填充
+        String fileName = TestFileUtil.getPath() + "row-oneFill" + System.currentTimeMillis() + ".xlsx";
+        // 这里 会填充到第一个sheet， 然后文件流会自动关闭
+        FillData fillData = new FillData();
+        fillData.setName("u'张三è");
+        fillData.setNumber(5.2);
+        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().registerWriteHandler(new SheetWriteHandler(){
+            @Override
+            public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
+                writeWorkbookHolder.getWorkbook().setForceFormulaRecalculation(true);
+            }
+        }).doFill(fillData);
+    }
+
+    @Test
+    void testForm3() {
+        // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
+        String templateFileName =
+            TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "formula3.xlsx";
+
+        // 方案1 根据对象填充
+        String fileName = TestFileUtil.getPath() + "formula3Fill" + System.currentTimeMillis() + ".xlsx";
+        // 这里 会填充到第一个sheet， 然后文件流会自动关闭
+        FillData fillData = new FillData();
+        fillData.setName("u'张三è");
+        fillData.setNumber(5.2);
+
+        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().registerWriteHandler(new SheetWriteHandler(){
+            @Override
+            public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
+                writeWorkbookHolder.getWorkbook().setForceFormulaRecalculation(true);
+            }
+        }).doFill(fillData);
+    }
+
+    @Test
     void testCellRow() {
         // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
         String templateFileName =
