@@ -17,12 +17,7 @@ import com.alibaba.excel.metadata.data.ImageData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.util.DateUtils;
-import com.alibaba.excel.util.FileTypeUtils;
-import com.alibaba.excel.util.ListUtils;
-import com.alibaba.excel.util.StyleUtil;
-import com.alibaba.excel.util.WorkBookUtil;
-import com.alibaba.excel.util.WriteHandlerUtils;
+import com.alibaba.excel.util.*;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
@@ -130,7 +125,9 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         }
         Cell cell = cellWriteHandlerContext.getCell();
         if (formulaData.getFormulaValue() != null) {
+            cellWriteHandlerContext.setOriginalValue(StringUtils.EMPTY);
             cell.setCellFormula(formulaData.getFormulaValue());
+            cell.setCellValue(StringUtils.EMPTY);
             cellWriteHandlerContext.getWriteWorkbookHolder().getWorkbook().setForceFormulaRecalculation(true);
         }
     }
