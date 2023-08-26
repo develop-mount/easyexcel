@@ -17,9 +17,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.vevor</groupId>
+            <groupId>icu.develop</groupId>
             <artifactId>pipe-filter</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
